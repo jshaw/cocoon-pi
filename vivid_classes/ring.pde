@@ -10,6 +10,10 @@ class Ring {
   boolean growing = true;
   long lastBeat;
   int pulse;
+  float flair = 0.0;
+  float flairSpeed = 1.0;
+  float transparency = 255.0;
+  float transparencySpeed = 5.0;
   
   // What key has been pressed
   int state = 48;
@@ -165,7 +169,7 @@ class Ring {
       // Key 2
       if (state == 50){
         float diameterWH = constrain(diameter, 10, 1000) + sin(angle) * 5 + (cos(angle/2))* 5;
-        
+        fbo.ellipse(x, y, diameterWH, diameterWH);
       }
       
       // Key 3
@@ -177,10 +181,13 @@ class Ring {
       if (visible && state == 52){
         float animationPulse = 10 + (sin(PI*angle/5)+sin(angle*2/5)) * 4;
         
-        fbo.stroke(0, 0, 255, 255);
-        fbo.ellipse(x, y, animationPulse + 2 , animationPulse + 2);
+        //fbo.stroke(0, 0, 255, 255);
+        //fbo.fill(0, 0, 255, 255 - millis());
+        fbo.fill(0, 0, 255, transparency - transparencySpeed);
+        fbo.ellipse(x, y, animationPulse + flair, animationPulse + flair);
         noStroke();
         
+        fbo.fill(map(beat, 700, 1100, 1, 360), 255, 255, 255);
         fbo.ellipse(x, y, animationPulse, animationPulse);
         
         // working on wrapping circle around       
@@ -205,6 +212,9 @@ class Ring {
           fbo.ellipse(x, y - 10, animationPulse, animationPulse);
           noStroke();
         }
+        
+        flair += flairSpeed;
+        transparency -= transparencySpeed;
         
       }
       
