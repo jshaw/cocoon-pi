@@ -229,7 +229,14 @@ class Ring {
       
       // Visible && Key 6 (Blinks)
       if (state == 54){
-        float animationPulse = diameter + 2*sin(angle/2) - sin(1+angle);
+        
+        // Decent Tests
+        // ===================
+        //float animationPulse = diameter + 2*sin(angle/2) - sin(1+angle);
+        // float animationPulse = diameter + 2*sin((angle/2)/2) - sin(1+angle/x);
+        // float animationPulse = diameter + 2*sin(angle/2) - (sin(1+angle)/2);
+        
+        float animationPulse = diameter + (2*sin(angle/2)/2) - (sin(1+angle)/2);
 
         if(transparency > 0){
           fbo.fill(0, 0, 255, transparency - transparencySpeed);
