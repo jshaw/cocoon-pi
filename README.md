@@ -12,3 +12,4 @@ Behaviours controlled by keyboard keypressed. The state reference number on keyb
 * 3: blinks to beat + moves
 * 4: pulsates more quickly
 * 5: blinks + pulsates more quickly
+* 6: decreases diameter + pulsates in a hearbeat pattern
