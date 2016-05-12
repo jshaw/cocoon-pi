@@ -10,7 +10,8 @@
 ArrayList<Ring> rings;
 int ringCount = 0;
 PGraphics fbo;
-int state = 48;
+// Default to 4
+int state = 52;
 
 void setup() {
   size(600, 300);

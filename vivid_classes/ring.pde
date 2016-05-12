@@ -165,7 +165,7 @@ class Ring {
       // Key 2
       if (state == 50){
         float diameterWH = constrain(diameter, 10, 1000) + sin(angle) * 5 + (cos(angle/2))* 5;
-        fbo.ellipse(x, y, diameterWH, diameterWH);
+        
       }
       
       // Key 3
@@ -177,6 +177,30 @@ class Ring {
       if (visible && state == 52){
         float animationPulse = 10 + (sin(PI*angle/5)+sin(angle*2/5)) * 4;
         fbo.ellipse(x, y, animationPulse, animationPulse);
+        
+        // working on wrapping circle around       
+        float radius = animationPulse / 2;
+        
+        if (x-radius >= 0){
+          println("===== wrap =====");
+          println("diamater: ");
+          print(animationPulse);
+          
+          stroke(255,255,255);
+          fbo.ellipse(x, y + 10, animationPulse, animationPulse);
+          noStroke();
+        }
+        
+        if (x+radius >= 10){
+          println("===== wrap =====");
+          println("diamater: ");
+          print(animationPulse);
+          
+          stroke(255,255,255);
+          fbo.ellipse(x, y - 10, animationPulse, animationPulse);
+          noStroke();
+        }
+        
       }
       
       // Visible && Key 5 (Blinks)
