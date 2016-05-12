@@ -147,6 +147,32 @@ class Ring {
       on = true;
       visible = true;
     }
+    
+    // Key 6
+    if(state == 54 ){
+      
+      if (on == true) {    // is it active
+        if (diameter > 10) {
+          diameter -= 0.1;
+        }
+        //if (growing) {
+        //  diameter += 0.1;
+        //  if (diameter > 10) {
+        //    growing = false;
+        //  }
+        //} else {
+        //  diameter -= 0.1;
+        //  if (diameter < 7) {
+        //    growing = true;
+        //  }
+        //}
+        //if ((millis() - lastBeat) > beat) {     // flash to the beat!
+        //  visible = !visible;                   // we can add interpolation later.
+        //  lastBeat = millis();
+        //}
+      }
+    }
+    
   }
   
   void display() {
@@ -179,8 +205,10 @@ class Ring {
       
       // Visible && Key 4 (Blinks)
       if (visible && state == 52){
-        float animationPulse = 10 + (sin(PI*angle/5)+sin(angle*2/5)) * 4;
+        float animationPulse = 10 + (sin(PI*angle/10)+sin(angle*2/10)) * 4;
         
+        //float animationPulse = diameter + 2*sin(angle/2) - sin(1+angle);
+       
         //fbo.stroke(0, 0, 255, 255);
         //fbo.fill(0, 0, 255, 255 - millis());
         fbo.fill(0, 0, 255, transparency - transparencySpeed);
@@ -217,11 +245,54 @@ class Ring {
         transparency -= transparencySpeed;
         
       }
-      
-      // Visible && Key 5 (Blinks)
+
       if (visible && state == 53){
         float animationPulse = 15 + (sin(2-angle) + sin(x/angle)) * -6;
         fbo.ellipse(x, y, animationPulse, animationPulse);
+      }
+      
+      // Visible && Key 6 (Blinks)
+      if (state == 54){
+        //float animationPulse = 10 + (sin(PI*angle/10)+sin(angle*2/10)) * 4;
+        
+        
+        float animationPulse = diameter + 2*sin(angle/2) - sin(1+angle);
+        
+        
+        //fbo.stroke(0, 0, 255, 255);
+        //fbo.fill(0, 0, 255, 255 - millis());
+        fbo.fill(0, 0, 255, transparency - transparencySpeed);
+        fbo.ellipse(x, y, animationPulse + flair, animationPulse + flair);
+        noStroke();
+        
+        fbo.fill(map(beat, 700, 1100, 1, 360), 255, 255, 255);
+        fbo.ellipse(x, y, animationPulse, animationPulse);
+        
+        // working on wrapping circle around       
+        float radius = animationPulse / 2;
+        
+        if (x-radius >= 0){
+          println("===== wrap =====");
+          println("diamater: ");
+          print(animationPulse);
+          
+          stroke(255,255,255);
+          fbo.ellipse(x, y + 10, animationPulse, animationPulse);
+          noStroke();
+        }
+        
+        if (x+radius >= 10){
+          println("===== wrap =====");
+          println("diamater: ");
+          print(animationPulse);
+          
+          stroke(255,255,255);
+          fbo.ellipse(x, y - 10, animationPulse, animationPulse);
+          noStroke();
+        }
+        
+        flair += flairSpeed;
+        transparency -= transparencySpeed;
       }
 
     }

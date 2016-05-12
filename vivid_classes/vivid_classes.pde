@@ -6,6 +6,7 @@
 // 3: blinks to beat + moves
 // 4: pulsates more quickly
 // 5: blinks + pulsates more quickly
+// 6: decreases diameter + pulsates in a hearbeat pattern
 
 ArrayList<Ring> rings;
 int ringCount = 0;
