@@ -40,7 +40,7 @@ class Ring {
     diameter = 400/size;
     angle = 0.0;
     on = true;
-    beat = int(random(100, 400));
+    beat = int(random(700, 1100));
     lastBeat = millis();
     print("beat: ");
     println(beat);
@@ -147,8 +147,8 @@ class Ring {
   
   void display() {
     if (on == true) {
-      fbo.fill(map(beat, 100, 400, 1, 360), 255, 255, 255);
-      fbo.strokeWeight(4);
+      fbo.fill(map(beat, 700, 1100, 1, 360), 255, 255, 255);
+      fbo.strokeWeight(1);
       fbo.noStroke();
       
       // Visible && Key 0 (Blinks)
@@ -176,6 +176,11 @@ class Ring {
       // Visible && Key 4 (Blinks)
       if (visible && state == 52){
         float animationPulse = 10 + (sin(PI*angle/5)+sin(angle*2/5)) * 4;
+        
+        fbo.stroke(0, 0, 255, 255);
+        fbo.ellipse(x, y, animationPulse + 2 , animationPulse + 2);
+        noStroke();
+        
         fbo.ellipse(x, y, animationPulse, animationPulse);
         
         // working on wrapping circle around       
