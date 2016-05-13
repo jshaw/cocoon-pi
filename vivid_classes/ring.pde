@@ -210,13 +210,13 @@ class Ring {
         
         if (x-radius >= 0){          
           stroke(255,255,255);
-          fbo.ellipse(x, y + 10, animationPulse, animationPulse);
+          fbo.ellipse(x + 10, y, animationPulse, animationPulse);
           noStroke();
         }
         
         if (x+radius >= 10){
           stroke(255,255,255);
-          fbo.ellipse(x, y - 10, animationPulse, animationPulse);
+          fbo.ellipse(x - 10, y, animationPulse, animationPulse);
           noStroke();
         }
         
@@ -239,31 +239,33 @@ class Ring {
         float animationPulse = diameter + (2*sin(angle/2)/2) - (sin(1+angle)/2);
 
         if(transparency > 0){
-          fbo.fill(0, 0, 255, transparency - transparencySpeed);
-          fbo.ellipse(x, y, animationPulse + flair, animationPulse + flair);
+         fbo.fill(0, 0, 255, transparency - transparencySpeed);
+         fbo.ellipse(x, y, animationPulse + flair, animationPulse * 2 + flair);
           
-          flair += flairSpeed;
-          transparency -= transparencySpeed;
+         flair += flairSpeed;
+         transparency -= transparencySpeed;
         }
         
         noStroke();
         
         fbo.fill(map(beat, 700, 1100, 1, 360), 255, 255, 255);
-        fbo.ellipse(x, y, animationPulse, animationPulse);
+        fbo.ellipse(x, y, animationPulse, animationPulse * 2);
         
         // working on wrapping circle around       
         float radius = animationPulse / 2;
         
-        if (x-radius >= 0){
-          stroke(255,255,255);
-          fbo.ellipse(x, y + 10, animationPulse, animationPulse);
-          noStroke();
+        if (x - radius >= 0.0){
+          println("x-radius");
+          println(x-radius);
+          println(x);
+          fbo.ellipse(x - 10.0, y, animationPulse, animationPulse * 2);
+          fbo.noStroke();
         }
         
-        if (x+radius >= 10){
-          stroke(255,255,255);
-          fbo.ellipse(x, y - 10, animationPulse, animationPulse);
-          noStroke();
+        if (x - radius <= 0.0){
+          println("====x+radius");
+          fbo.ellipse(x + 10.0, y, animationPulse, animationPulse * 2);
+          fbo.noStroke();
         }
         
       }
@@ -276,17 +278,19 @@ class Ring {
     // Pulse the ring based on the provided beat
     angle += float(beat) / float(1000);
     
-    print("beat: ");
-    println(beat);
+    //print("beat: ");
+    //println(beat);
     
-    print("ANGLE: ");
-    println(angle);
+    //print("ANGLE: ");
+    //println(angle);
+    
   }
   
   void updateState(int s){
-    print("State Update: ");
-    println(s);
-    println("========");
+    //print("State Update: ");
+    //println(s);
+    //println("========");
+    
     state = s;
   }
   
