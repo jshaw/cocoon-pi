@@ -21,7 +21,7 @@ void setup() {
 void draw () {
   beat4 = getBeat(4);
   beat5 = getBeat(5);
-  //sendDMX();
+  sendDMX();
   
 
   delay(200);
@@ -50,7 +50,6 @@ int getBeat(int address) {
       byte[] in = i2c.read(4);
       String beatString = new String(in);
       int beat = int(trim(beatString));
-      
       
       newbeat = beat;
       print("Address: " + address + " beat: ");
