@@ -255,15 +255,15 @@ class Ring {
         float radius = animationPulse / 2;
         
         if (x - radius >= 0.0){
-          println("x-radius");
-          println(x-radius);
-          println(x);
+          //println("x-radius");
+          //println(x-radius);
+          //println(x);
           fbo.ellipse(x - 10.0, y, animationPulse, animationPulse * 2);
           fbo.noStroke();
         }
         
         if (x - radius <= 0.0){
-          println("====x+radius");
+          //println("====x+radius");
           fbo.ellipse(x + 10.0, y, animationPulse, animationPulse * 2);
           fbo.noStroke();
         }

@@ -19,6 +19,8 @@ int tubeRes = 32;
 float rotx = PI/4;
 float roty = PI/4;
 
+boolean show3d = false;
+
 void setup() {
   size(600, 600, P3D);
   rings = new ArrayList();
@@ -42,16 +44,17 @@ void draw() {
   
   translate(width / 2, height / 2);
   
-  rotateX(rotx);
-  rotateY(roty);
-  
-  
-  fbo.colorMode(RGB);
-  fill(255, 255, 255);
-  pushMatrix();
-  //drawCylinder(32, 20, 160);
-  drawCylinder(32, 30, 480);
-  popMatrix();
+  if(show3d){
+    rotateX(rotx);
+    rotateY(roty);
+    
+    fbo.colorMode(RGB);
+    fill(255, 255, 255);
+    pushMatrix();
+    //drawCylinder(32, 10, 160);
+    drawCylinder(32, 30, 480);
+    popMatrix();
+  }
 }
 
 void mousePressed() {
@@ -62,7 +65,15 @@ void mousePressed() {
 
 void keyPressed() {
   println(key);
-  state =(int)key;
+  if(key == 's'){
+    println("*******");
+    println(show3d);
+    println("*******");
+    show3d =! show3d;
+  } else {
+    state =(int)key;
+  }
+  
 }
 
 void mouseDragged() {
