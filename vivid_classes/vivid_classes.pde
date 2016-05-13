@@ -1,6 +1,18 @@
+// Behaviours controlled by keyboard keypressed. 
+// States reference number on keyboard 
+// 0:  blinking per supplied beat
+// 1: pulsates at a specific time (need to add the beat into this)
+// 2: pulsates + moves
+// 3: blinks to beat + moves
+// 4: pulsates more quickly
+// 5: blinks + pulsates more quickly
+// 6: decreases diameter + pulsates in a hearbeat pattern
+
 ArrayList<Ring> rings;
 int ringCount = 0;
 PGraphics fbo;
+// Default to #4 key
+int state = 52;
 
 void setup() {
   size(600, 300);
@@ -17,11 +29,15 @@ void draw() {
 }
 
 void mousePressed() {
-  ringCount++;
-  rings.add(new Ring((int)random(0,160), (int)random(0,10), ringCount));
+  ringCount++; 
+  rings.add(new Ring((int)random(0,160), (int)random(0,10), ringCount, (int)state));
   println(rings.size());
 }
 
+void keyPressed() {
+  println(key);
+  state =(int)key;
+}
 
 void buildFbo() {
   fbo.beginDraw();
@@ -29,6 +45,7 @@ void buildFbo() {
   fbo.colorMode(HSB);
   for (int i = 0; i < rings.size(); i++) {
     Ring r = rings.get(i);
+    r.updateState(state);
     r.update();
     r.display();
     if (r.on == false) {
