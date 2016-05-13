@@ -1,3 +1,5 @@
+// click mouse to generate objects
+
 // Behaviours controlled by keyboard keypressed. 
 // States reference number on keyboard 
 // 0:  blinking per supplied beat
@@ -18,6 +20,7 @@ void setup() {
   size(600, 300);
   rings = new ArrayList();
   colorMode(RGB);
+  blendMode(ADD);
   fbo = createGraphics(160, 10);
 }
 
