@@ -194,7 +194,7 @@ class Ring {
 
         if(transparency > 0){
           fbo.fill(0, 0, 255, transparency - transparencySpeed);
-          fbo.ellipse(x, y, animationPulse + flair, animationPulse + flair);
+          fbo.ellipse(x, y, animationPulse + flair, animationPulse * 2 + flair);
           
           flair += flairSpeed;
           transparency -= transparencySpeed;
@@ -203,21 +203,23 @@ class Ring {
         noStroke();
         
         fbo.fill(map(beat, 700, 1100, 1, 360), 255, 255, 255);
-        fbo.ellipse(x, y, animationPulse, animationPulse);
+        fbo.ellipse(x, y, animationPulse, animationPulse * 2);
         
         // working on wrapping circle around       
         float radius = animationPulse / 2;
         
-        if (x-radius >= 0){          
-          stroke(255,255,255);
-          fbo.ellipse(x + 10, y, animationPulse, animationPulse);
-          noStroke();
+        if (x - radius >= 0.0){
+          //println("x-radius");
+          //println(x-radius);
+          //println(x);
+          fbo.ellipse(x - 10.0, y, animationPulse, animationPulse * 2);
+          fbo.noStroke();
         }
         
-        if (x+radius >= 10){
-          stroke(255,255,255);
-          fbo.ellipse(x - 10, y, animationPulse, animationPulse);
-          noStroke();
+        if (x - radius <= 0.0){
+          //println("====x+radius");
+          fbo.ellipse(x + 10.0, y, animationPulse, animationPulse * 2);
+          fbo.noStroke();
         }
         
       }
