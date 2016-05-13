@@ -1,6 +1,5 @@
 // click mouse to generate objects
 
-
 // Behaviours controlled by keyboard keypressed. 
 // States reference number on keyboard 
 // 0:  blinking per supplied beat

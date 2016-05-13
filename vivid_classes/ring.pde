@@ -14,13 +14,13 @@ class Ring {
   float flairSpeed = 1.0;
   float transparency = 255.0;
   float transparencySpeed = 5.0;
-
+  
   // What key has been pressed
   int state = 48;
-
+  
   // Var for generating x,y random speed
   float speed = 0.5;
-
+  
   //
   float angle = 0.0;
 
@@ -131,30 +131,31 @@ class Ring {
     }
 
     // Key 4
-    if (state == 52 ) {
-
+    if(state == 52 ){
+      
       if (diameter > 10) {
         diameter -= 0.1;
       }
-
+      
       on = true;
       visible = true;
-    }
 
+    }
+    
     // Key 5
-    if (state == 53 ) {
-
+    if(state == 53 ){
+      
       if (diameter > 10) {
         diameter -= 0.1;
       }
-
+      
       on = true;
       visible = true;
     }
-
+    
     // Key 6
-    if (state == 54 ) {
-
+    if(state == 54 ){
+      
       if (on == true) {    // is it active
         if (diameter > 10) {
           diameter -= 0.1;
