@@ -121,10 +121,10 @@ void drawCylinder( int sides, float r, float h) {
         float x = cos( radians( i * angle ) ) * r;
         float y = sin( radians( i * angle ) ) * r;
         //float u = fbo.width / tubeRes * i;
-        float u = (float)img.width / (float)tubeRes * (float)i;
+        float u = (float)fbo.width / (float)tubeRes * (float)i;
         
         vertex( x, y, halfHeight, u, 0);
-        vertex( x, y, -halfHeight, u, img.height);
+        vertex( x, y, -halfHeight, u, fbo.height);
     }
     endShape(CLOSE);
 }
