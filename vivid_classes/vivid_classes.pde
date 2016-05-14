@@ -1,3 +1,5 @@
+// click mouse to generate objects
+
 // Behaviours controlled by keyboard keypressed. 
 // States reference number on keyboard 
 // 0:  blinking per supplied beat
@@ -32,6 +34,9 @@ void setup() {
   size(600, 600, P3D);
   rings = new ArrayList();
   colorMode(RGB);
+  
+  // Change color mode to be 
+  blendMode(ADD);
   fbo = createGraphics(imgWidth, imgHeight);
   
   // img for testing and debugging texture mapping
