@@ -1,4 +1,4 @@
-// click mouse to generate objects
+// click 'a' to generate objects
 
 // Behaviours controlled by keyboard keypressed. 
 // States reference number on keyboard 
@@ -9,6 +9,9 @@
 // 4: pulsates more quickly
 // 5: blinks + pulsates more quickly
 // 6: decreases diameter + pulsates in a hearbeat pattern
+//
+// S: toggles visualization
+// a: simulates new heartbeat from sensors with a random value between 700 and 1100
 
 ArrayList<Ring> rings;
 int ringCount = 0;
@@ -34,34 +37,33 @@ void setup() {
   size(600, 600, P3D);
   rings = new ArrayList();
   colorMode(RGB);
-  
+
   // Change color mode to be 
-  blendMode(ADD);
   fbo = createGraphics(imgWidth, imgHeight);
-  
+
   // img for testing and debugging texture mapping
   //img = loadImage("vividTestTextures_2.jpg");
 }
 
 void draw() {
-  
-  background(100,255);
+
+  background(100, 255);
   colorMode(HSB);
-  
+
   // Messing around with lighting
   //lights();
   //ambientLight(102, 102, 102);
   //directionalLight(255, 255, 255, 1, 1, 1);
-  
+
   buildFbo();
   image(fbo, 60, 60, imgWidth * 3, imgHeight * 3);
-  
+
   translate(width / 2, height / 2);
-  
-  if(show3d){
+
+  if (show3d) {
     rotateX(rotx);
     rotateY(roty);
-    
+
     pushMatrix();
     // 32, 10 * 3, 160 * 3
     drawCylinder(tubeRes, imgWidth * 3, imgHeight * 3);
@@ -70,15 +72,17 @@ void draw() {
 }
 
 void mousePressed() {
-  ringCount++; 
-  rings.add(new Ring((int)random(0, imgWidth), (int)random(0, imgHeight), ringCount, (int)state));
-  println(rings.size());
 }
 
 void keyPressed() {
   println(key);
-  if(key == 's'){
+  if (key == 's') {
     show3d =! show3d;
+  }
+  else if (key == 'a') {
+    ringCount++; 
+    rings.add(new Ring((int)random(0, imgWidth), (int)random(0, imgHeight), ringCount, (int)state));
+    println(rings.size());
   } else {
     state =(int)key;
   }
@@ -92,8 +96,10 @@ void mouseDragged() {
 
 void buildFbo() {
   fbo.beginDraw();
-  fbo.background(0,255);
+  fbo.background(0, 255);
   fbo.colorMode(HSB);
+  fbo.blendMode(ADD);
+
   for (int i = 0; i < rings.size(); i++) {
     Ring r = rings.get(i);
     r.updateState(state);
@@ -108,48 +114,48 @@ void buildFbo() {
 }
 
 void drawCylinder( int sides, float r, float h) {
-    float angle = 360.0 / (float)sides;
-    float halfHeight = h / 2;
-    
-    // draw top + bottom of the tube
-    drawEnds(halfHeight, angle, sides, r, h);
-    
-    // draw sides
-    beginShape(TRIANGLE_STRIP);
-    
-    // Texture the cylinder
-    // Use img for debugging image mapping w/ a static image 
-    // texture(img);
-    texture(fbo);
-    
-    for (int i = 0; i < sides + 1; i++) {
-        float x = cos( radians( i * angle ) ) * r;
-        float y = sin( radians( i * angle ) ) * r;
-        //float u = fbo.width / tubeRes * i;
-        float u = (float)fbo.width / (float)tubeRes * (float)i;
-        
-        vertex( x, y, halfHeight, u, 0);
-        vertex( x, y, -halfHeight, u, fbo.height);
-    }
-    endShape(CLOSE);
+  float angle = 360.0 / (float)sides;
+  float halfHeight = h / 2;
+
+  // draw top + bottom of the tube
+  drawEnds(halfHeight, angle, sides, r, h);
+
+  // draw sides
+  beginShape(TRIANGLE_STRIP);
+
+  // Texture the cylinder
+  // Use img for debugging image mapping w/ a static image 
+  // texture(img);
+  texture(fbo);
+
+  for (int i = 0; i < sides + 1; i++) {
+    float x = cos( radians( i * angle ) ) * r;
+    float y = sin( radians( i * angle ) ) * r;
+    //float u = fbo.width / tubeRes * i;
+    float u = (float)fbo.width / (float)tubeRes * (float)i;
+
+    vertex( x, y, halfHeight, u, 0);
+    vertex( x, y, -halfHeight, u, fbo.height);
+  }
+  endShape(CLOSE);
 }
 
 void drawEnds(float halfHeight, float angle, int sides, float r, float h) {
-    // draw top of the tube  
-    beginShape();
-    for (int i = 0; i <= sides; i++) {
-      float x = cos( radians( i * angle ) ) * r;
-      float y = sin( radians( i * angle ) ) * r;
-      vertex( x, y, -halfHeight);
-    }
-    endShape(CLOSE);
+  // draw top of the tube  
+  beginShape();
+  for (int i = 0; i <= sides; i++) {
+    float x = cos( radians( i * angle ) ) * r;
+    float y = sin( radians( i * angle ) ) * r;
+    vertex( x, y, -halfHeight);
+  }
+  endShape(CLOSE);
 
-    // draw bottom of the tube
-    beginShape();
-    for (int i = 0; i < sides; i++) {
-      float x = cos( radians( i * angle ) ) * r;
-      float y = sin( radians( i * angle ) ) * r;
-      vertex( x, y, halfHeight);
-    }
-    endShape(CLOSE);
+  // draw bottom of the tube
+  beginShape();
+  for (int i = 0; i < sides; i++) {
+    float x = cos( radians( i * angle ) ) * r;
+    float y = sin( radians( i * angle ) ) * r;
+    vertex( x, y, halfHeight);
+  }
+  endShape(CLOSE);
 }
