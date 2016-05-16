@@ -73,7 +73,7 @@ class Ring {
   void update() {
 
     // Key 0 & 3
-    if (state == 48 || state == 51 ) {
+    if (state == 48 || state == 51) {
       if (on == true) {    // is it active
         if (growing) {
           diameter += 0.1;
@@ -122,10 +122,10 @@ class Ring {
 
     // Key 4
     if(state == 52 ){
-      on = true;
-      visible = true;
+     on = true;
+     visible = true;
       
-      decreaseDiameter();
+     decreaseDiameter();
     }
     
     // Key 5

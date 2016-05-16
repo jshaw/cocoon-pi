@@ -12,6 +12,7 @@
 //
 // S: toggles visualization
 // a: simulates new heartbeat from sensors with a random value between 700 and 1100
+// x: kills all objects and creates a blank canvas.
 
 ArrayList<Ring> rings;
 int ringCount = 0;
@@ -83,6 +84,9 @@ void keyPressed() {
     ringCount++; 
     rings.add(new Ring((int)random(0, imgWidth), (int)random(0, imgHeight), ringCount, (int)state));
     println(rings.size());
+  }
+  else if (key == 'x') {   // clear all objects
+    rings.clear();
   } else {
     state =(int)key;
   }
