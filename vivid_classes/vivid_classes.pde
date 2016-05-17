@@ -19,6 +19,10 @@ int ringCount = 0;
 PGraphics fbo;
 PImage img;
 
+String blendMode[] = {"BLEND", "ADD", "SUBTRACT", "DARKEST", "LIGHTEST", 
+                  "DIFFERENCE", "EXCLUSION", "MULTIPLY", "SCREEN", "REPLACE"};
+int blendModeIndex = 1;
+
 // Default to #6 key
 int state = 54;
 
@@ -38,7 +42,7 @@ void setup() {
   size(600, 600, P3D);
   rings = new ArrayList();
   colorMode(RGB);
-
+    
   // Change color mode to be 
   fbo = createGraphics(imgWidth, imgHeight);
 
@@ -77,6 +81,7 @@ void mousePressed() {
 
 void keyPressed() {
   println(key);
+  
   if (key == 's') {
     show3d =! show3d;
   }
@@ -87,6 +92,15 @@ void keyPressed() {
   }
   else if (key == 'x') {   // clear all objects
     rings.clear();
+  } else if(key == 'm') {
+    
+    // rotate through blendmode options
+    if(blendModeIndex < blendMode.length - 1){
+      blendModeIndex++;
+    } else {
+      blendModeIndex = 0;
+    }
+    
   } else {
     state =(int)key;
   }
@@ -102,7 +116,10 @@ void buildFbo() {
   fbo.beginDraw();
   fbo.background(0, 255);
   fbo.colorMode(HSB);
-  fbo.blendMode(ADD);
+  
+  println("**********************");
+  println(blendMode[blendModeIndex]);
+  fbo.blendMode(blendModeIndex);
 
   for (int i = 0; i < rings.size(); i++) {
     Ring r = rings.get(i);
