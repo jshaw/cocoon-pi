@@ -101,6 +101,9 @@ void keyPressed() {
       blendModeIndex = 0;
     }
     
+    println("**********************");
+    println(blendMode[blendModeIndex]);
+    
   } else {
     state =(int)key;
   }
@@ -116,9 +119,6 @@ void buildFbo() {
   fbo.beginDraw();
   fbo.background(0, 255);
   fbo.colorMode(HSB);
-  
-  println("**********************");
-  println(blendMode[blendModeIndex]);
   fbo.blendMode(blendModeIndex);
 
   for (int i = 0; i < rings.size(); i++) {
