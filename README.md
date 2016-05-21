@@ -7,9 +7,12 @@ I'll add another folder with the compatible arduino sketch.
 Control for the sketch is done with the below keys:
 * a: add a new beat to the sketch
 * x: clear all of the current beats
+* g: will toggle between the gradient on the rings to help with color blending
+* t: will toggle between showing a dark stroke ring around the flair
 * m: pressing `m` multiple times will cycle through the different blendModes
 * s: will toggle the visibility of the 3d simulation
 * left mouse: click and hold the left mouse button will rotate the 3d simulation 
+
 
 Behaviours controlled by keyboard keypressed. The state reference number on keyboard. 
 
