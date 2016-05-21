@@ -10,9 +10,14 @@
 // 5: blinks + pulsates more quickly
 // 6: decreases diameter + pulsates in a hearbeat pattern
 //
-// S: toggles visualization
+//
 // a: simulates new heartbeat from sensors with a random value between 700 and 1100
 // x: kills all objects and creates a blank canvas.
+// g: will toggle between the gradient on the rings to help with color blending
+// t: will toggle between showing a dark stroke ring around the flair
+// m: pressing m multiple times will cycle through the different blendModes
+// s: will toggle the visibility of the 3d simulation
+// left mouse: click and hold the left mouse button will rotate the 3d simulation
 
 ArrayList<Ring> rings;
 int ringCount = 0;
