@@ -23,8 +23,8 @@ String blendMode[] = {"BLEND", "ADD", "SUBTRACT", "DARKEST", "LIGHTEST",
                   "DIFFERENCE", "EXCLUSION", "MULTIPLY", "SCREEN", "REPLACE"};
 int blendModeIndex = 1;
 
-// Default to #6 key
-int state = 54;
+// Default to #4 key
+int state = 52;
 
 // number of 
 int tubeRes = 32;
@@ -37,6 +37,12 @@ float roty = PI/4;
 
 // display the 3d simulation of the cocoon
 boolean show3d = true;
+
+// state tracking for showing ring gradient
+boolean showRingGradient = true;
+
+// state tracking for showing ring stroke
+boolean showRingStroke = true;
 
 void setup() {
   size(600, 600, P3D);
@@ -92,20 +98,24 @@ void keyPressed() {
   }
   else if (key == 'x') {   // clear all objects
     rings.clear();
-  } else if(key == 'm') {
-    
+  } 
+  else if(key == 'm') {
     // rotate through blendmode options
     if(blendModeIndex < blendMode.length - 1){
       blendModeIndex++;
     } else {
       blendModeIndex = 0;
     }
-    
-    println("**********************");
-    println(blendMode[blendModeIndex]);
-    
-  } else {
-    state =(int)key;
+  } 
+  else if(key == 'g') {
+    showRingGradient =! showRingGradient;
+  }
+  else if(key == 't') {
+    showRingStroke =! showRingStroke;
+  }
+  else {
+    // setting this here actually pauses the animations
+    //state =(int)key;
   }
 }
 
@@ -124,6 +134,8 @@ void buildFbo() {
   for (int i = 0; i < rings.size(); i++) {
     Ring r = rings.get(i);
     r.updateState(state);
+    r.toggleRingGradient(showRingGradient);
+    r.toggleRingStroke(showRingStroke);
     r.update();
     r.display();
     if (r.on == false) {
