@@ -45,11 +45,12 @@ class Ring {
   
   boolean showRingStroke = true;
 
-  Ring(int xpos, int ypos, int idin, int s) {
+  Ring(int xpos, int ypos, int idin, int s, int b) {
     x = (float)xpos;
     y = (float)ypos;
     id = idin;
     state = s;
+    beat = b;
 
     xSpeed = (float)random(-speed, speed);
     ySpeed = (float)random(-speed, speed);
@@ -67,7 +68,6 @@ class Ring {
     diameter = 100/size;
     angle = 0.0;
     on = true;
-    beat = int(random(beatMin, beatMax));
     lastBeat = millis();
     
     print("beat: ");
