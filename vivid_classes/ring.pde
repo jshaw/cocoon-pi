@@ -1,4 +1,4 @@
-class Ring {
+  class Ring {
   
   float x, y; // X-coordinate, y-coordinate
   int id, beat; 
