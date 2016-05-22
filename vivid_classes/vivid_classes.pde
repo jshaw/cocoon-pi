@@ -203,9 +203,9 @@ void mapPixels() {
   // Run through the pixels and map them to the DMX universes
   // Also run the number through the gamma LUT for better look
   for (int s = 0; s < 1600; s ++) {
-    universe[s%10].setSlot((s/10)*3, (byte)gamma((char)red(fbo.pixels[s]))); 
-    universe[s%10].setSlot(((s/10)*3+1), (byte)gamma((char)green(fbo.pixels[s]))); 
-    universe[s%10].setSlot(((s/10)*3+2), (byte)gamma((char)blue(fbo.pixels[s])));
+    universe[s%10].setSlot((160-s/10)*3, (byte)gamma((char)red(fbo.pixels[s]))); 
+    universe[s%10].setSlot(((160-s/10)*3+1), (byte)gamma((char)green(fbo.pixels[s]))); 
+    universe[s%10].setSlot(((160-s/10)*3+2), (byte)gamma((char)blue(fbo.pixels[s])));
   }
 
   // Send out the data to each universe
