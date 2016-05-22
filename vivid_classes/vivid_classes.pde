@@ -19,13 +19,22 @@
 // s: will toggle the visibility of the 3d simulation
 // left mouse: click and hold the left mouse button will rotate the 3d simulation
 
+
+//import processing.io.*;
+import eDMX.*;
+
 ArrayList<Ring> rings;
 int ringCount = 0;
 PGraphics fbo;
 PImage img;
 
+sACNSource source;
+sACNUniverse[] universe;
+int numUniverses = 10;
+
+
 String blendMode[] = {"BLEND", "ADD", "SUBTRACT", "DARKEST", "LIGHTEST", 
-                  "DIFFERENCE", "EXCLUSION", "MULTIPLY", "SCREEN", "REPLACE"};
+  "DIFFERENCE", "EXCLUSION", "MULTIPLY", "SCREEN", "REPLACE"};
 int blendModeIndex = 1;
 
 // Default to #4 key
@@ -53,18 +62,26 @@ void setup() {
   size(600, 600, P3D);
   rings = new ArrayList();
   colorMode(RGB);
-    
+
   // Change color mode to be 
   fbo = createGraphics(imgWidth, imgHeight);
 
   // img for testing and debugging texture mapping
   //img = loadImage("vividTestTextures_2.jpg");
+
+  // initialize eDMX stuff 10 universes
+
+  source = new sACNSource(this, "Vivid sACN");
+  universe = new sACNUniverse[numUniverses];
+  for (int i = 0; i < numUniverses; i++) {
+    universe[i] = new sACNUniverse(source, (short)(i+1));
+  }
 }
 
 void draw() {
 
   background(100, 255);
-  colorMode(HSB);
+  colorMode(RGB);
 
   // Messing around with lighting
   //lights();
@@ -92,33 +109,27 @@ void mousePressed() {
 
 void keyPressed() {
   println(key);
-  
+
   if (key == 's') {
     show3d =! show3d;
-  }
-  else if (key == 'a') {
+  } else if (key == 'a') {
     ringCount++; 
     rings.add(new Ring((int)random(0, imgWidth), (int)random(0, imgHeight), ringCount, (int)state));
     println(rings.size());
-  }
-  else if (key == 'x') {   // clear all objects
+  } else if (key == 'x') {   // clear all objects
     rings.clear();
-  } 
-  else if(key == 'm') {
+  } else if (key == 'm') {
     // rotate through blendmode options
-    if(blendModeIndex < blendMode.length - 1){
+    if (blendModeIndex < blendMode.length - 1) {
       blendModeIndex++;
     } else {
       blendModeIndex = 0;
     }
-  } 
-  else if(key == 'g') {
+  } else if (key == 'g') {
     showRingGradient =! showRingGradient;
-  }
-  else if(key == 't') {
+  } else if (key == 't') {
     showRingStroke =! showRingStroke;
-  }
-  else {
+  } else {
     // setting this here actually pauses the animations
     //state =(int)key;
   }
@@ -132,7 +143,9 @@ void mouseDragged() {
 
 void buildFbo() {
   fbo.beginDraw();
-  fbo.background(0, 255);
+  fbo.colorMode(RGB);
+
+  fbo.background(255,0,0, 255);
   fbo.colorMode(HSB);
   fbo.blendMode(blendModeIndex);
 
@@ -149,6 +162,31 @@ void buildFbo() {
     }
   }
   fbo.endDraw();
+}
+
+void mapPixels(){
+  // let's put the pixel stuff here
+  // loadpixel array, then figure out where each pixel goes in the LED map
+
+  fbo.loadPixels();
+  
+  // Run through the pixels and map them to the DMX universes
+  for (int s = 0; s < 1600; s ++){
+      universe[s%10].setSlot((s/10)*3, (byte)red(fbo.pixels[s])); 
+      universe[s%10].setSlot(((s/10)*3+1), (byte)green(fbo.pixels[s])); 
+      universe[s%10].setSlot(((s/10)*3+2), (byte)blue(fbo.pixels[s]));    
+  }
+
+  // Send out the data to each universe
+  try {
+    for (int i = 0; i < numUniverses; i++) {
+      universe[i].sendData();
+    }
+  }
+  catch (Exception e) {
+    e.printStackTrace();
+    exit();
+  }
 }
 
 void drawCylinder( int sides, float r, float h) {
