@@ -222,7 +222,8 @@ void mapPixels() {
   }
 }
 
-// This needs to be before update()
+// This lookup table adjust led levels to have better perceived ramping
+// at the expense of colour depth
 char gammaLUT[] = {
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,
