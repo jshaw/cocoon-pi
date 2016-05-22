@@ -31,9 +31,6 @@ int val = 0;
 int beat4;
 int beat5;
 
-
-boolean onPi = false;        // set to true on the pi.
-
 ArrayList<Ring> rings;
 int ringCount = 0;
 PGraphics fbo;
