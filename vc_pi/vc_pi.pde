@@ -21,6 +21,8 @@ void setup() {
 void draw () {
   beat4 = getBeat(4);
   beat5 = getBeat(5);
+  //
+  
   sendDMX();
   
 
