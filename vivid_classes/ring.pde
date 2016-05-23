@@ -1,4 +1,4 @@
-class Ring {
+  class Ring {
   
   float x, y; // X-coordinate, y-coordinate
   int id, beat; 
@@ -39,16 +39,21 @@ class Ring {
   
   // track maths increment angle for sin/cos equations
   float angle = 0.0;
+  
+  // state tracking for showing ring gradient
+  boolean showRingGradient = true;
+  
+  boolean showRingStroke = true;
 
-  Ring(int xpos, int ypos, int idin, int s) {
+  Ring(int xpos, int ypos, int idin, int s, int b) {
     x = (float)xpos;
     y = (float)ypos;
     id = idin;
     state = s;
+    beat = b;
 
     xSpeed = (float)random(-speed, speed);
     ySpeed = (float)random(-speed, speed);
-
 
     print("xSpeed: ");
     println(xSpeed);
@@ -63,7 +68,6 @@ class Ring {
     diameter = 100/size;
     angle = 0.0;
     on = true;
-    beat = int(random(beatMin, beatMax));
     lastBeat = millis();
     
     print("beat: ");
@@ -71,6 +75,7 @@ class Ring {
   }
 
   void update() {
+    noStroke();
 
     // Key 0 & 3
     if (state == 48 || state == 51) {
@@ -97,49 +102,56 @@ class Ring {
       }
     }
 
+    // Visible && Key 0 (Blinks)
+    if (visible && state == 48) {
+      animationPulse = diameter;
+    }
+    
     // Key 1
     if(state == 49 ){
       on = true;
       visible = true;
-      
       decreaseDiameter();
+      animationPulse = (sin(angle*2) + sin(angle/2)) + diameter;
     }
 
     // Key 2
     if(state == 50 ){
       on = true;
       visible = true;
-      
       decreaseDiameter();
       updateSpeed();
+      animationPulse = constrain(diameter, 10, 1000) + sin(angle) * 5 + (cos(angle/2))* 5;
     }
 
     // Key 3
     if(state == 51 ){
       decreaseDiameter();
       updateSpeed();
+      animationPulse = diameter/2;
     }
 
     // Key 4
     if(state == 52 ){
-     on = true;
-     visible = true;
-      
-     decreaseDiameter();
+      on = true;
+      visible = true;
+      decreaseDiameter();
+      animationPulse = 10 + (sin(PI*angle/10)+sin(angle*2/10)) * 4;
     }
     
     // Key 5
     if(state == 53 ){
       on = true;
       visible = true;
-      
       decreaseDiameter();
+      animationPulse = 15 + (sin(2-angle) + sin(x/angle)) * -6;
     }
     
     // Key 6
     if(state == 54 ){
       if (on == true) {    // is it active
         decreaseDiameter();
+        animationPulse = diameter + (2*sin(angle/2)/2) - (sin(1+angle)/2);
       }
     }
   }
@@ -147,71 +159,29 @@ class Ring {
   void display() {
     if (on == true) {
       // Sets the default circle fill color 
-      setRingFill();
-      //fbo.strokeWeight(1);
+      setRingFill(255);
       fbo.noStroke();
 
-      // Visible && Key 0 (Blinks)
-      if (visible && state == 48) {
-        animationPulse = diameter;
-      }
-
-      // Key 1
-      if (state == 49){
-        animationPulse = (sin(angle*2) + sin(angle/2)) + diameter;
-      }
-
-      // Key 2
-      if (state == 50){
-        animationPulse = constrain(diameter, 10, 1000) + sin(angle) * 5 + (cos(angle/2))* 5;
-      }
-
-      // Key 3
-      if (visible && state == 51){
-        animationPulse = diameter/2;
-      }
-
-      // Visible && Key 4 (Blinks)
-      if (visible && state == 52){
-        
-        noStroke();
-        animationPulse = 10 + (sin(PI*angle/10)+sin(angle*2/10)) * 4;
+      // Visible && Key 4 (Blinks) || Key 6
+      if (visible && state == 52 || state == 54){
         
         // Draws bursting flair visual behind the ring
         drawFlair(animationPulse);       
         
         // Sets ring default fill color after drawing the flair 
-        setRingFill();
+        setRingFill(255);
         
         // working on wrapping circle around
-        drawWrappedShapes(animationPulse);
-        
-      }
-
-      if (visible && state == 53){
-        animationPulse = 15 + (sin(2-angle) + sin(x/angle)) * -6;
-      }
-
-      // Visible && Key 6 (Blinks)
-      if (state == 54){
-        noStroke();
-        // Decent Tests
-        // ===================
-        //float animationPulse = diameter + 2*sin(angle/2) - sin(1+angle);
-        // float animationPulse = diameter + 2*sin((angle/2)/2) - sin(1+angle/x);
-        // float animationPulse = diameter + 2*sin(angle/2) - (sin(1+angle)/2);
-        
-        animationPulse = diameter + (2*sin(angle/2)/2) - (sin(1+angle)/2);
-        drawFlair(animationPulse);
-        setRingFill();
-        
-        // working on wrapping circle around
-        drawWrappedShapes(animationPulse);
-        
+        drawWrappedShapes(animationPulse);        
       }
       
       // Draws the main ring / circle that represents the beat
       // =================
+      if(showRingGradient == true){       
+        drawEllipseGradient(x, y, animationPulse);
+      }
+      
+      setRingFill(255);
       fbo.ellipse(x, y, animationPulse, animationPulse * 2);
 
     }
@@ -222,27 +192,35 @@ class Ring {
     
     //print("beat: ");
     //println(beat);
-    
-    //print("ANGLE: ");
-    //println(angle);
-    
   }
   
+  // Updates the state of the visuals (what version to display)
   void updateState(int s){
-    //print("State Update: ");
-    //println(s);
-    //println("========");
     state = s;
   }
   
-  void setRingFill(){   
-    fbo.fill(map(beat, beatMin, beatMax, 1, 360), 255, 255, 255);
+  void setRingFill(int alpha){   
+    fbo.fill(map(beat, beatMin, beatMax, 1, 255), 255, 255, alpha);
   }
   
   void drawFlair(float animationPulse){
     if(transparency > 0){
+      float flairOffset = 0.0;
       fbo.fill(0, 0, 255, transparency - transparencySpeed);
-      fbo.ellipse(x, y, animationPulse + flair, animationPulse * 2 + flair);
+      
+      if(showRingStroke){
+        fbo.strokeWeight(3);
+        fbo.stroke(0, 0, 0, transparency - transparencySpeed);
+      } else {
+        fbo.noStroke();
+      }
+      
+      if(showRingGradient == true){
+        flairOffset = 12.0;      
+      }
+      
+      fbo.ellipse(x, y, animationPulse + flairOffset + flair, (animationPulse + flairOffset) * 2 + flair);
+      fbo.noStroke();
       
       flair += flairSpeed;
       transparency -= transparencySpeed;
@@ -253,13 +231,39 @@ class Ring {
     float radius = animationPulse / 2;
         
     if (x - radius >= 0.0){
-      fbo.ellipse(x - 10.0, y, animationPulse, animationPulse * 2);
+      if(showRingGradient == true){
+        drawEllipseGradient((x-10), y, animationPulse);
+      }
+      
+      setRingFill(255);
+      fbo.ellipse(x-10, y, animationPulse, animationPulse * 2);
+      
       fbo.noStroke();
     }
     
     if (x - radius <= 0.0){
-      fbo.ellipse(x + 10.0, y, animationPulse, animationPulse * 2);
+      if(showRingGradient == true){
+        drawEllipseGradient((x+10), y, animationPulse);
+      }
+      
+      setRingFill(255);
+      fbo.ellipse(x+10, y, animationPulse, animationPulse * 2);
+      
       fbo.noStroke();
+    }
+  }
+
+  void drawEllipseGradient(float x, float y, float animationPulse){
+    int initFill = 50;
+    float initPulseIncrement = 12.0;
+    
+    for (int i = 0; i <= 2; i++){
+     float aP = animationPulse + initPulseIncrement;
+     setRingFill(initFill);
+     fbo.ellipse(x, y, aP, aP * 2);
+      
+     initFill+=initFill;
+     initPulseIncrement -= 4.0;
     }
   }
 
@@ -267,6 +271,14 @@ class Ring {
     if (diameter > 10) {
       diameter -= 0.1;
     }
+  }
+  
+  void toggleRingGradient(boolean showGradient){
+    showRingGradient = showGradient;
+  }
+  
+  void toggleRingStroke(boolean showStroke){
+    showRingStroke = showStroke;
   }
   
   void updateSpeed(){
@@ -290,3 +302,9 @@ class Ring {
 //fbo.ellipse(x, y, (sin(diameter/2) + sin(diameter)) * 10 , (sin(diameter/2) + sin(diameter)) * 10);
 //fbo.ellipse(x, y, sin(angle/2) + 10, sin(angle/2) + 10);
 //fbo.ellipse(x, y, (sin(angle/2) + sin(angle)) + 10, (sin(angle/2) + sin(angle)) + 10);
+
+// Other decent equations
+// ===================
+// float animationPulse = diameter + 2*sin(angle/2) - sin(1+angle);
+// float animationPulse = diameter + 2*sin((angle/2)/2) - sin(1+angle/x);
+// float animationPulse = diameter + 2*sin(angle/2) - (sin(1+angle)/2);
