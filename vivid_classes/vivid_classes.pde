@@ -175,7 +175,7 @@ void buildFbo() {
   fbo.colorMode(RGB);
 
   // background RED for testing only...
-  fbo.background(0, 0, 0, 255);
+  fbo.background(100, 0, 0, 255);
   fbo.colorMode(HSB);
   fbo.blendMode(blendModeIndex);
 
