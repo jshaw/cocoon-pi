@@ -5,9 +5,9 @@ All this stuff goes in the sketchbook folder on the pi.
 I'll add another folder with the compatible arduino sketch.
 
 ### Saving + Loading
-When the sketch is loaded the defaults will be used. To save any changes to the behaviour use the 's' key to save to the config file. On the restart of the sketch press the 'l' key to load the saved config settings.
+When the sketch is loaded the defaults will be used. To save any changes to the behaviour use the `s` key to save to the config file. On the restart of the sketch press the `l` key to load the saved config settings.
 
-The reason for this workflow is that the sketchs default settings are always available when the sketch starts up incause the config file ends up with wonky settings or diviate from what looks good. It will be just a matter of restarting the sketch and saving before any changes are made to reset the config file.
+The reason for this workflow is that the sketchs default settings are always available when the sketch starts up incase the config file ends up with wonky settings or deviate from what looks good. It will be just a matter of restarting the sketch and saving before any changes are made to reset the config file.
 
 
 Control for the sketch is done with the below keys:
