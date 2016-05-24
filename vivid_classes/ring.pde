@@ -55,6 +55,10 @@
   
   // To pulse or not to pulse
   boolean pulseMode = true;
+  
+  int alphaFillVal = 255;
+  int initDefaultFill = 50;
+  //float initPulseIncrement = 9.0;
 
   Ring(int xpos, int ypos, int idin, int s, int b) {
     x = (float)xpos;
@@ -179,7 +183,7 @@
   void display() {
     if (on == true) {
       // Sets the default circle fill color 
-      setRingFill(255);
+      setRingFill(alphaFillVal);
       fbo.noStroke();
 
       // Visible && Key 4 (Blinks) || Key 6
@@ -189,7 +193,7 @@
         drawFlair(animationPulse);       
         
         // Sets ring default fill color after drawing the flair 
-        setRingFill(255);
+        setRingFill(alphaFillVal);
         
         // working on wrapping circle around
         drawWrappedShapes(animationPulse);        
@@ -201,7 +205,7 @@
         drawEllipseGradient(x, y, animationPulse);
       }
       
-      setRingFill(255);
+      setRingFill(alphaFillVal);
       fbo.ellipse(x, y, animationPulse, animationPulse * 2);
 
     }
@@ -271,7 +275,7 @@
       drawEllipseGradient((x-10), y, animationPulse);
     }
     
-    setRingFill(255);
+    setRingFill(alphaFillVal);
     fbo.ellipse(x-10, y, animationPulse, animationPulse * 2);
     
     fbo.noStroke();
@@ -280,14 +284,14 @@
       drawEllipseGradient((x+10), y, animationPulse);
     }
     
-    setRingFill(255);
+    setRingFill(alphaFillVal);
     fbo.ellipse(x+10, y, animationPulse, animationPulse * 2);
     
     fbo.noStroke();
   }
 
   void drawEllipseGradient(float x, float y, float animationPulse){
-    int initFill = 50;
+    int initFill = initDefaultFill;
     float initPulseIncrement = 9.0;
     
     for (int i = 0; i <= 2; i++){
@@ -316,6 +320,19 @@
   
   void toggleRingStroke(boolean showStroke){
     showRingStroke = showStroke;
+  }
+  
+  void fadeAway(){
+    println("FADE AWAY!");
+    if(alphaFillVal >= 0){
+      alphaFillVal -= 1;
+      
+      println(alphaFillVal);
+    }
+    
+    if(initDefaultFill >= 0){
+     initDefaultFill -= 1;
+    }
   }
     
   void updateVerticalChangeAmplitude(int a, int vc){

@@ -91,6 +91,9 @@ boolean showRingGradient = true;
 // state tracking for showing ring stroke
 boolean showRingStroke = true;
 
+int lastAddTimer = 0;
+boolean fadeOldRings = false;
+
 void setup() {
   size(600, 600, P3D);
   frameRate(fps);
@@ -144,6 +147,11 @@ void draw() {
   //  timer = millis();
   //}
   //---------------------------------------------------------------------
+  
+  if ((millis() - lastAddTimer) > 5000 && fadeOldRings == false) {
+    fadeOldRings = true;
+    println("Fade old rings");
+  }
 
   buildFbo();
   mapPixels();
@@ -247,6 +255,12 @@ void buildFbo() {
     r.updatePulseMode(pulseMode);
     r.toggleRingGradient(showRingGradient);
     r.toggleRingStroke(showRingStroke);
+    
+    // fade away the rings except the most recent rings added
+    if (i < (rings.size() - 4) && fadeOldRings == true){
+      r.fadeAway();
+    }
+    
     r.update();
     r.display();
     if (r.on == false) {
@@ -254,6 +268,8 @@ void buildFbo() {
       println(rings.size());
     }
   }
+  
+  fadeOldRings = false;
   fbo.endDraw();
 }
 
@@ -389,6 +405,7 @@ void drawEnds(float halfHeight, float angle, int sides, float r, float h) {
 void addRing(int inbeat) {
   ringCount++; 
   rings.add(new Ring((int)random(0, imgWidth), (int)random(0, imgHeight), ringCount, (int)state, inbeat));
+  lastAddTimer = millis();
   ringCount = rings.size();
 }
 
