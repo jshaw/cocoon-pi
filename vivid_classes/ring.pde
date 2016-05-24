@@ -1,5 +1,6 @@
   class Ring {
   
+  int fps = 30;
   float x, y; // X-coordinate, y-coordinate
   int id, beat; 
   
@@ -136,7 +137,9 @@
       on = true;
       visible = true;
       decreaseDiameter();
-      animationPulse = 10 + (sin(PI*angle/10)+sin(angle*2/10)) * 4;
+      
+      //animationPulse = 10 + sin(radians(angle))*5;
+      animationPulse = 10 + (sin(radians(angle/2)) + sin(radians(angle)))*-5;
     }
     
     // Key 5
@@ -187,11 +190,26 @@
     }
     
     // Pulse the ring based on the provided beat
-    // Default angle for consistent toration is 0.1
-    angle += float(beat) / float(1000);
+    // Calculates the number of degrees that needs to made per frame
+    // What we are doing here is calculating how much time we have to to turn a full 360degrees 
+    // within one second in the app 
+    // degrees in a circle / (frames per second ( beat millisecond / second in milliseconds ))
+    // 360 / (30 * (beat/1000))
+    // 360 / #of seconds to rotate
+    // = #degrees to make per frame
+    // ==================================
+    angle += degrees(TWO_PI) / ((float)fps * (float(beat) / float(1000)));    
+    
+    // ========== angle debugging for pulsing ring ============
+    //print("new angle: ");
+    //print(degrees(TWO_PI) / ((float)fps * (float(beat) / float(1000))));
+    
+    //print("angle: ");
+    //println(angle);
     
     //print("beat: ");
     //println(beat);
+    // ========== END debugging ============
   }
   
   // Updates the state of the visuals (what version to display)
@@ -230,7 +248,7 @@
   void drawWrappedShapes(float animationPulse){
     float radius = animationPulse / 2;
         
-    if (x - radius >= 0.0){
+    //if ((float)x - radius >= 0.0){
       if(showRingGradient == true){
         drawEllipseGradient((x-10), y, animationPulse);
       }
@@ -239,9 +257,9 @@
       fbo.ellipse(x-10, y, animationPulse, animationPulse * 2);
       
       fbo.noStroke();
-    }
+    //}
     
-    if (x - radius <= 0.0){
+    //if ((float)x - radius <= 0.0){
       if(showRingGradient == true){
         drawEllipseGradient((x+10), y, animationPulse);
       }
@@ -250,12 +268,12 @@
       fbo.ellipse(x+10, y, animationPulse, animationPulse * 2);
       
       fbo.noStroke();
-    }
+    //}
   }
 
   void drawEllipseGradient(float x, float y, float animationPulse){
     int initFill = 50;
-    float initPulseIncrement = 12.0;
+    float initPulseIncrement = 9.0;
     
     for (int i = 0; i <= 2; i++){
      float aP = animationPulse + initPulseIncrement;
@@ -263,7 +281,7 @@
      fbo.ellipse(x, y, aP, aP * 2);
       
      initFill+=initFill;
-     initPulseIncrement -= 4.0;
+     initPulseIncrement -= 3.0;
     }
   }
 

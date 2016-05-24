@@ -27,6 +27,9 @@ import eDMX.*;
 ////---------------------------------------------------------------------
 
 int val = 0;
+int fps = 30;
+int scale = 5;
+boolean showFPS = true;
 
 int beat4;
 int beat5;
@@ -70,6 +73,7 @@ boolean showRingStroke = true;
 
 void setup() {
   size(600, 600, P3D);
+  frameRate(fps);
   rings = new ArrayList();
   colorMode(RGB);
 
@@ -93,14 +97,11 @@ void setup() {
 }
 
 void draw() {
-
   background(100, 255);
+  if(showFPS == true){
+    drawFrameRate();
+  }
   colorMode(RGB);
-
-  // Messing around with lighting
-  //lights();
-  //ambientLight(102, 102, 102);
-  //directionalLight(255, 255, 255, 1, 1, 1);
 
 ////--------------------------------comment out for non-Pi use-----------
 // // check console 4
@@ -124,6 +125,7 @@ void draw() {
   translate(width / 2, height / 2);
 
   if (show3d) {
+    noStroke();
     rotateX(rotx);
     rotateY(roty);
 
@@ -158,7 +160,9 @@ void keyPressed() {
     showRingGradient =! showRingGradient;
   } else if (key == 't') {
     showRingStroke =! showRingStroke;
-  } else {
+  } else if (key == 'f') {
+    showFPS =! showFPS;
+  } else {  
     // setting this here actually pauses the animations
     //state =(int)key;
   }
@@ -292,6 +296,7 @@ void drawEnds(float halfHeight, float angle, int sides, float r, float h) {
   endShape(CLOSE);
 }
 
+
 ////--------------------------------comment out for non-Pi use-----------
 //int getBeat(int address) {
 //int newbeat = 0;
@@ -326,4 +331,11 @@ void addRing(int inbeat) {
   ringCount++; 
   rings.add(new Ring((int)random(0, imgWidth), (int)random(0, imgHeight), ringCount, (int)state, inbeat));
   ringCount = rings.size();
+}
+
+void drawFrameRate(){
+  float fr = frameRate;
+  textSize(18);
+  fill(255);
+  text("FPS: " + fr, 20, 38); 
 }
