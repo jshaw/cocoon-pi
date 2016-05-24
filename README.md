@@ -11,6 +11,10 @@ Control for the sketch is done with the below keys:
 * t: will toggle between showing a dark stroke ring around the flair
 * m: pressing `m` multiple times will cycle through the different blendModes
 * s: will toggle the visibility of the 3d simulation
+* f: toggles FPS log
+* p: toggles Pulse Mode on default visual key =# 4 key code = 52
+* left/right: changes amplitude of sine wave / ring
+* down/up: changes vertical change on y axis of sine wave / ring
 * left mouse: click and hold the left mouse button will rotate the 3d simulation 
 
 

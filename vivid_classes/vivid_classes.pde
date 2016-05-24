@@ -11,13 +11,18 @@
 // 6: decreases diameter + pulsates in a hearbeat pattern
 //
 //
-// a: simulates new heartbeat from sensors with a random value between 700 and 1100
-// x: kills all objects and creates a blank canvas.
-// g: will toggle between the gradient on the rings to help with color blending
-// t: will toggle between showing a dark stroke ring around the flair
-// m: pressing m multiple times will cycle through the different blendModes
-// s: will toggle the visibility of the 3d simulation
-// left mouse: click and hold the left mouse button will rotate the 3d simulation
+// Control for the sketch is done with the below keys:
+// * a: add a new beat to the sketch
+// * x: clear all of the current beats
+// * g: will toggle between the gradient on the rings to help with color blending
+// * t: will toggle between showing a dark stroke ring around the flair
+// * m: pressing `m` multiple times will cycle through the different blendModes
+// * s: will toggle the visibility of the 3d simulation
+// * f: toggles FPS log
+// * p: toggles Pulse Mode on default visual key =# 4 key code = 52
+// * left/right: changes amplitude of sine wave / ring
+// * down/up: changes vertical change on y axis of sine wave / ring
+// * left mouse: click and hold the left mouse button will rotate the 3d simulation 
 
 
 import eDMX.*;
@@ -27,6 +32,17 @@ I2C i2c;
 //---------------------------------------------------------------------
 
 int val = 0;
+int fps = 30;
+
+// Used in the ring class
+// amplitude is scaling the height of the pulsing (left/right)
+// verticalChange is moving the sine animation up the y axis so all the numbers are positive (up/down)
+// this can be changed via up/down or left/right keys
+int amplitude = 5;
+int verticalChange = 10;
+
+boolean showFPS = true;
+boolean pulseMode = true;
 
 int beat4;
 int beat5;
@@ -71,6 +87,7 @@ boolean showRingStroke = true;
 
 void setup() {
   size(600, 600, P3D);
+  frameRate(fps);
   rings = new ArrayList();
   colorMode(RGB);
 
@@ -97,14 +114,11 @@ void setup() {
 }
 
 void draw() {
-
   background(100, 255);
+  if(showFPS == true){
+    drawFrameRate();
+  }
   colorMode(RGB);
-
-  // Messing around with lighting
-  //lights();
-  //ambientLight(102, 102, 102);
-  //directionalLight(255, 255, 255, 1, 1, 1);
 
   //--------------------------------comment out for non-Pi use-----------
   // check console 4
@@ -132,6 +146,7 @@ void draw() {
   translate(width / 2, height / 2);
 
   if (show3d) {
+    noStroke();
     rotateX(rotx);
     rotateY(roty);
 
@@ -166,9 +181,37 @@ void keyPressed() {
     showRingGradient =! showRingGradient;
   } else if (key == 't') {
     showRingStroke =! showRingStroke;
-  } else {
+  } else if (key == 'f') {
+    showFPS =! showFPS;
+  } else if (key == 'p') {
+    pulseMode =! pulseMode;
+  } else {  
     // setting this here actually pauses the animations
     //state =(int)key;
+    
+    if (key == CODED) {
+      if (keyCode == UP) {
+        verticalChange += 1;
+      } else if (keyCode == DOWN) {
+        if(verticalChange > 0){
+          verticalChange -= 1;
+        }
+      } else if (keyCode == RIGHT) {
+        amplitude += 1;
+      } else if (keyCode == LEFT) {
+        if(amplitude > 0){
+          amplitude -= 1;
+        }
+      }
+    }
+    
+    // ====== Debuging for the customization of the ring sizes 
+    //println("amplitude: ");
+    //println(amplitude);
+      
+    //println("verticalChange: ");
+    //println(verticalChange);
+    
   }
 }
 
@@ -190,6 +233,8 @@ void buildFbo() {
   for (int i = 0; i < rings.size(); i++) {
     Ring r = rings.get(i);
     r.updateState(state);
+    r.updateVerticalChangeAmplitude(amplitude, verticalChange);
+    r.updatePulseMode(pulseMode);
     r.toggleRingGradient(showRingGradient);
     r.toggleRingStroke(showRingStroke);
     r.update();
@@ -300,6 +345,7 @@ void drawEnds(float halfHeight, float angle, int sides, float r, float h) {
   endShape(CLOSE);
 }
 
+
 //--------------------------------comment out for non-Pi use-----------
 int getBeat(int address) {
   int newbeat = 0;
@@ -334,4 +380,11 @@ void addRing(int inbeat) {
   ringCount++; 
   rings.add(new Ring((int)random(0, imgWidth), (int)random(0, imgHeight), ringCount, (int)state, inbeat));
   ringCount = rings.size();
+}
+
+void drawFrameRate(){
+  float fr = frameRate;
+  textSize(18);
+  fill(255);
+  text("FPS: " + fr, 20, 38); 
 }
