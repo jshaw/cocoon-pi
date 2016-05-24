@@ -30,6 +30,7 @@ int val = 0;
 int fps = 30;
 int scale = 5;
 boolean showFPS = true;
+boolean pulseMode = true;
 
 int beat4;
 int beat5;
@@ -162,6 +163,8 @@ void keyPressed() {
     showRingStroke =! showRingStroke;
   } else if (key == 'f') {
     showFPS =! showFPS;
+  } else if (key == 'p') {
+    pulseMode =! pulseMode;
   } else {  
     // setting this here actually pauses the animations
     //state =(int)key;
@@ -186,6 +189,7 @@ void buildFbo() {
   for (int i = 0; i < rings.size(); i++) {
     Ring r = rings.get(i);
     r.updateState(state);
+    r.updatePulseMode(pulseMode);
     r.toggleRingGradient(showRingGradient);
     r.toggleRingStroke(showRingStroke);
     r.update();

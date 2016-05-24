@@ -45,6 +45,8 @@
   boolean showRingGradient = true;
   
   boolean showRingStroke = true;
+  
+  boolean pulseMode = true;
 
   Ring(int xpos, int ypos, int idin, int s, int b) {
     x = (float)xpos;
@@ -138,8 +140,13 @@
       visible = true;
       decreaseDiameter();
       
-      //animationPulse = 10 + sin(radians(angle))*5;
-      animationPulse = 10 + (sin(radians(angle/2)) + sin(radians(angle)))*-5;
+      // Toggles PulseMode. Controlled by 'p' on the keyboard
+      if(pulseMode == true){
+        animationPulse = 10 + (sin(radians(angle/2)) + sin(radians(angle)))*-5;
+      } else{
+        animationPulse = 10 + sin(radians(angle))*5;
+      }
+      
     }
     
     // Key 5
@@ -291,6 +298,10 @@
   
   void toggleRingGradient(boolean showGradient){
     showRingGradient = showGradient;
+  }
+  
+  void updatePulseMode(boolean pm){
+    pulseMode = pm;
   }
   
   void toggleRingStroke(boolean showStroke){
