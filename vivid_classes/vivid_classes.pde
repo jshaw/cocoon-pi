@@ -12,12 +12,14 @@
 //
 //
 // Control for the sketch is done with the below keys:
+// * s: will save current config settings
+// * l: will load the saved config file
 // * a: add a new beat to the sketch
 // * x: clear all of the current beats
 // * g: will toggle between the gradient on the rings to help with color blending
 // * t: will toggle between showing a dark stroke ring around the flair
 // * m: pressing `m` multiple times will cycle through the different blendModes
-// * s: will toggle the visibility of the 3d simulation
+// * d: will toggle the visibility of the 3d simulation
 // * f: toggles FPS log
 // * p: toggles Pulse Mode on default visual key =# 4 key code = 52
 // * left/right: changes amplitude of sine wave / ring
@@ -33,6 +35,10 @@ import eDMX.*;
 
 int val = 0;
 int fps = 30;
+
+// Config settings storage
+String[] config;
+String configFileName = "config.txt";
 
 // Used in the ring class
 // amplitude is scaling the height of the pulsing (left/right)
@@ -90,7 +96,7 @@ void setup() {
   frameRate(fps);
   rings = new ArrayList();
   colorMode(RGB);
-
+  
   //--------------------------------comment out for non-Pi use-----------
   //i2c = new I2C(I2C.list()[0]);
   //---------------------------------------------------------------------
@@ -163,8 +169,12 @@ void mousePressed() {
 void keyPressed() {
   println(key);
 
-  if (key == 's') {
+  if (key == 'd') {
     show3d =! show3d;
+  } else if (key == 's') {
+    saveConfig();
+  } else if (key == 'l') {
+    loadConfig();
   } else if (key == 'a') {
     // make a new Ring object
     addRing(int(random(700, 1100)));
@@ -387,4 +397,48 @@ void drawFrameRate(){
   textSize(18);
   fill(255);
   text("FPS: " + fr, 20, 38); 
+}
+
+void loadConfig(){
+  config = loadStrings(configFileName);
+  
+  for(int i = 0; i < config.length; i++) {
+    String[] pieces = split(config[i], ' ');
+    println(pieces[0] + ": " + pieces[1]);
+    
+    // Sets the config file to appropriate variables in the app
+    switch(pieces[0]) {
+      case "showRingGradient": 
+        showRingGradient = boolean(pieces[1]);
+        break;
+      case "showRingStroke": 
+        showRingStroke = boolean(pieces[1]);
+        break;
+      case "blendModeIndex": 
+        blendModeIndex = int(pieces[1]);
+        break;
+      case "pulseMode": 
+        pulseMode = boolean(pieces[1]);
+        break;
+      case "amplitude": 
+        amplitude = int(pieces[1]);
+        break;
+      case "verticalChange": 
+        verticalChange = int(pieces[1]);
+        break;
+    }
+  }
+}
+
+void saveConfig(){
+  String words = "showRingGradient "+ showRingGradient +"\n";
+          words += "showRingStroke " + showRingStroke + "\n";
+          words += "blendModeIndex " + blendModeIndex + "\n";
+          words += "pulseMode " + pulseMode + "\n";
+          words += "amplitude " + amplitude + "\n";
+          words += "verticalChange " + verticalChange;
+  String[] list = split(words, '\n');
+  
+  // Writes the behaviour variables to the config file 
+  saveStrings("data/" + configFileName, list);
 }
