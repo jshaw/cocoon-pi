@@ -40,8 +40,6 @@ int fps = 30;
 // this can be changed via up/down or left/right keys
 int amplitude = 5;
 int verticalChange = 10;
-//int previousAmplitude = 5;
-//int previousVerticalChange = 10;
 
 boolean showFPS = true;
 boolean pulseMode = true;
