@@ -20,6 +20,13 @@
   int imgWidth = 10;
   int imgHeight = 160;
   
+  // Used in the ring class
+  // amplitude is scaling the height of the pulsing (left/right)
+  // verticalChange is moving the sine animation up the y axis so all the numbers are positive (up/down)
+  // this can be changed via up/down or left/right keys
+  int amplitude = 5;
+  int verticalChange = 10;
+  
   //Size of flair
   float flair = 0.0;
   
@@ -46,6 +53,7 @@
   
   boolean showRingStroke = true;
   
+  // To pulse or not to pulse
   boolean pulseMode = true;
 
   Ring(int xpos, int ypos, int idin, int s, int b) {
@@ -142,9 +150,11 @@
       
       // Toggles PulseMode. Controlled by 'p' on the keyboard
       if(pulseMode == true){
-        animationPulse = 10 + (sin(radians(angle/2)) + sin(radians(angle)))*-5;
+        //animationPulse = 10 + (sin(radians(angle/2)) + sin(radians(angle)))*-5;
+        animationPulse = verticalChange + (sin(radians(angle/2)) + sin(radians(angle)))*(amplitude*-1);
       } else{
-        animationPulse = 10 + sin(radians(angle))*5;
+        //animationPulse = 10 + sin(radians(angle))*5;
+        animationPulse = verticalChange + sin(radians(angle))*amplitude;
       }
       
     }
@@ -307,7 +317,20 @@
   void toggleRingStroke(boolean showStroke){
     showRingStroke = showStroke;
   }
-  
+    
+  void updateVerticalChangeAmplitude(int a, int vc){
+    // Controls the distance or spread between the highest and lowest parts of the curve
+    if(a > 1){
+      amplitude = a;
+    }
+    
+    // Move the sin way up the y axis.
+    // this controls if the smallest number will ever be below 0. 
+    if(vc > 1){
+      verticalChange = vc;
+    }    
+  }
+    
   void updateSpeed(){
     x += xSpeed;
     y += ySpeed;

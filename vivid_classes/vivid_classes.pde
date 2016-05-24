@@ -28,7 +28,16 @@ import eDMX.*;
 
 int val = 0;
 int fps = 30;
-int scale = 5;
+
+// Used in the ring class
+// amplitude is scaling the height of the pulsing (left/right)
+// verticalChange is moving the sine animation up the y axis so all the numbers are positive (up/down)
+// this can be changed via up/down or left/right keys
+int amplitude = 5;
+int verticalChange = 10;
+//int previousAmplitude = 5;
+//int previousVerticalChange = 10;
+
 boolean showFPS = true;
 boolean pulseMode = true;
 
@@ -168,6 +177,30 @@ void keyPressed() {
   } else {  
     // setting this here actually pauses the animations
     //state =(int)key;
+    
+    if (key == CODED) {
+      if (keyCode == UP) {
+        verticalChange += 1;
+      } else if (keyCode == DOWN) {
+        if(verticalChange > 0){
+          verticalChange -= 1;
+        }
+      } else if (keyCode == RIGHT) {
+        amplitude += 1;
+      } else if (keyCode == LEFT) {
+        if(amplitude > 0){
+          amplitude -= 1;
+        }
+      }
+    }
+    
+    // ====== Debuging for the customization of the ring sizes 
+    //println("amplitude: ");
+    //println(amplitude);
+      
+    //println("verticalChange: ");
+    //println(verticalChange);
+    
   }
 }
 
@@ -189,6 +222,7 @@ void buildFbo() {
   for (int i = 0; i < rings.size(); i++) {
     Ring r = rings.get(i);
     r.updateState(state);
+    r.updateVerticalChangeAmplitude(amplitude, verticalChange);
     r.updatePulseMode(pulseMode);
     r.toggleRingGradient(showRingGradient);
     r.toggleRingStroke(showRingStroke);
