@@ -248,27 +248,25 @@
   void drawWrappedShapes(float animationPulse){
     float radius = animationPulse / 2;
         
-    //if ((float)x - radius >= 0.0){
-      if(showRingGradient == true){
-        drawEllipseGradient((x-10), y, animationPulse);
-      }
-      
-      setRingFill(255);
-      fbo.ellipse(x-10, y, animationPulse, animationPulse * 2);
-      
-      fbo.noStroke();
-    //}
+    // Removed conditional to draw wrapped rings all of the time
+    // They always wrap at somepoint due to pulsing + gradient
+    if(showRingGradient == true){
+      drawEllipseGradient((x-10), y, animationPulse);
+    }
     
-    //if ((float)x - radius <= 0.0){
-      if(showRingGradient == true){
-        drawEllipseGradient((x+10), y, animationPulse);
-      }
-      
-      setRingFill(255);
-      fbo.ellipse(x+10, y, animationPulse, animationPulse * 2);
-      
-      fbo.noStroke();
-    //}
+    setRingFill(255);
+    fbo.ellipse(x-10, y, animationPulse, animationPulse * 2);
+    
+    fbo.noStroke();
+    
+    if(showRingGradient == true){
+      drawEllipseGradient((x+10), y, animationPulse);
+    }
+    
+    setRingFill(255);
+    fbo.ellipse(x+10, y, animationPulse, animationPulse * 2);
+    
+    fbo.noStroke();
   }
 
   void drawEllipseGradient(float x, float y, float animationPulse){
