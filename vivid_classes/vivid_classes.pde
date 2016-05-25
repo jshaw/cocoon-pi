@@ -99,6 +99,10 @@ boolean fadeOldRings = false;
 int purgeRingsTimer = 5000;
 int remainingRings = 4;
 
+// Max number of rings that can be in the sketch
+// If any more rings are added start to remove the old rings
+int maxNumberOfRings = 40;
+
 boolean editRings = false;
 boolean editRingTimer = false;
 
@@ -170,7 +174,7 @@ void draw() {
   
   if ((millis() - lastAddTimer) > purgeRingsTimer && fadeOldRings == false) {
     fadeOldRings = true;
-    println("Fade old rings");
+    //println("Fade old rings");
   }
 
   buildFbo();
@@ -289,6 +293,17 @@ void buildFbo() {
   fbo.background(100, 0, 0, 255);
   fbo.colorMode(HSB);
   fbo.blendMode(blendModeIndex);
+
+  // Checks to see the number if rings and that they don't exceed the max number
+  // if the max number is exceeded remove the oldest rings so that the rings size is equal to the max
+  // number of rings.
+  if (rings.size() > maxNumberOfRings){
+    int rs = rings.size();
+    int sizeDifference = rs - maxNumberOfRings; 
+    for (int j = 0; j < sizeDifference; j++) {
+      rings.remove(j);
+    }
+  }
 
   for (int i = 0; i < rings.size(); i++) {
     Ring r = rings.get(i);
