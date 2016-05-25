@@ -9,7 +9,7 @@
   float diameter;      // Diameter of the ring
   float animationPulse; // the dynamic and updated diameter or the pulsing circle
   
-  boolean on = false;  // Turns the display on and off
+  boolean on = true;  // Turns the display on and off
   boolean visible = false;
   boolean growing = true;
   long lastBeat;
@@ -147,7 +147,7 @@
 
     // Key 4
     if(state == 52 ){
-      on = true;
+      //on = true;
       visible = true;
       decreaseDiameter();
       
@@ -321,17 +321,24 @@
     showRingStroke = showStroke;
   }
   
+  public boolean returnOnValue(){
+    return on;
+  }
+  
   // After a time of inactivity. No new beats
   void fadeAway(){
     // fade away the actual ring via alpha
-    if(alphaFillVal >= 0){
-      println("FADE AWAY!");
+    if(alphaFillVal > 0){
       alphaFillVal -= 1;
-      println(alphaFillVal);
+    } 
+    
+    // when alpha is at 0, mark as ready to be removed from array list
+    if(alphaFillVal == 0){
+      on = false;
     }
     
     // fade away the gradient alpha rings around the original ring
-    if(initDefaultFill >= 0){
+    if(initDefaultFill > 0){
      initDefaultFill -= 1;
     }
   }

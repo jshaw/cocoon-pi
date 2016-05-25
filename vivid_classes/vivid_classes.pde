@@ -305,9 +305,10 @@ void buildFbo() {
     
     r.update();
     r.display();
-    if (r.on == false) {
+        
+    if (r.returnOnValue() == false) {
       rings.remove(i);
-      println(rings.size());
+      println("NUMBER OF RINGS NOW" + rings.size());
     }
   }
   
