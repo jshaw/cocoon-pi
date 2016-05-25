@@ -17,14 +17,17 @@
 // * a: add a new beat to the sketch
 // * x: clear all of the current beats
 // * g: will toggle between the gradient on the rings to help with color blending
-// * t: will toggle between showing a dark stroke ring around the flair
+// * k: will toggle between showing a dark stroke ring around the flair
 // * m: pressing `m` multiple times will cycle through the different blendModes
 // * d: will toggle the visibility of the 3d simulation
 // * f: toggles FPS log
 // * p: toggles Pulse Mode on default visual key =# 4 key code = 52
 // * left/right: changes amplitude of sine wave / ring
 // * down/up: changes vertical change on y axis of sine wave / ring
-// * left mouse: click and hold the left mouse button will rotate the 3d simulation 
+// * left mouse: click and hold the left mouse button will rotate the 3d simulation
+
+// * t then up/down then t: activates increase / decrease purge ring timer. Press t again to exit that config. 
+// * r then up/down: increase / decrease number of rings left after purge. Press r again to exit that config.
 
 
 import eDMX.*;
@@ -93,6 +96,14 @@ boolean showRingStroke = true;
 
 int lastAddTimer = 0;
 boolean fadeOldRings = false;
+int purgeRingsTimer = 5000;
+int remainingRings = 4;
+
+boolean editRings = false;
+boolean editRingTimer = false;
+
+float ringMap = 0.0;
+float ringMapTimer = 0.0;
 
 void setup() {
   size(600, 600, P3D);
@@ -127,6 +138,15 @@ void draw() {
   if(showFPS == true){
     drawFrameRate();
   }
+  
+  if(editRings == true){
+    drawEditRings();
+  }
+  
+  if(editRingTimer == true){
+    drawEditRingTimer();
+  }
+  
   colorMode(RGB);
 
   //--------------------------------comment out for non-Pi use-----------
@@ -148,7 +168,7 @@ void draw() {
   //}
   //---------------------------------------------------------------------
   
-  if ((millis() - lastAddTimer) > 5000 && fadeOldRings == false) {
+  if ((millis() - lastAddTimer) > purgeRingsTimer && fadeOldRings == false) {
     fadeOldRings = true;
     println("Fade old rings");
   }
@@ -197,21 +217,43 @@ void keyPressed() {
     }
   } else if (key == 'g') {
     showRingGradient =! showRingGradient;
-  } else if (key == 't') {
+  } else if (key == 'k') {
     showRingStroke =! showRingStroke;
   } else if (key == 'f') {
     showFPS =! showFPS;
   } else if (key == 'p') {
     pulseMode =! pulseMode;
+  } else if (key == 'r') {
+    editRings =! editRings;
+  } else if (key == 't') {
+    editRingTimer =! editRingTimer;
   } else {  
     // setting this here actually pauses the animations
     //state =(int)key;
-    
+        
     if (key == CODED) {
       if (keyCode == UP) {
-        verticalChange += 1;
+        if(editRings == true){
+          if(remainingRings <= 14){
+            remainingRings += 1;
+          }
+        } else if (editRingTimer == true) {
+          if(purgeRingsTimer <= 155000){
+            purgeRingsTimer += 50000;
+          }
+        } else {
+          verticalChange += 1;
+        }
       } else if (keyCode == DOWN) {
-        if(verticalChange > 0){
+        if(editRings == true){
+          if(remainingRings > 1){
+            remainingRings -= 1;
+          }
+        } else if (editRingTimer == true) {
+          if(purgeRingsTimer > 5000){
+            purgeRingsTimer -= 50000;
+          }
+        } else {
           verticalChange -= 1;
         }
       } else if (keyCode == RIGHT) {
@@ -257,7 +299,7 @@ void buildFbo() {
     r.toggleRingStroke(showRingStroke);
     
     // fade away the rings except the most recent rings added
-    if (i < (rings.size() - 4) && fadeOldRings == true){
+    if (i < (rings.size() - remainingRings) && fadeOldRings == true){
       r.fadeAway();
     }
     
@@ -267,6 +309,16 @@ void buildFbo() {
       rings.remove(i);
       println(rings.size());
     }
+  }
+  
+  // Draws the ring timer / remaining rings as visuals on the instal for reference of value
+  fbo.noStroke();
+  if(editRings == true){
+    fbo.fill(0, 102, 204);
+    fbo.rect(0, fbo.height - 4, ringMap, 4);
+  } else if (editRingTimer == true) {
+    fbo.fill(204, 102, 0);
+    fbo.rect(0, fbo.height - 4, ringMapTimer, 4);
   }
   
   fadeOldRings = false;
@@ -416,6 +468,22 @@ void drawFrameRate(){
   text("FPS: " + fr, 20, 38); 
 }
 
+void drawEditRings(){
+  int rr = remainingRings;
+  ringMap = map(rr, 0, 15, 0, imgWidth);
+  textSize(18);
+  fill(255);
+  text("Remaining Rings: " + rr, 175, 38);
+}
+
+void drawEditRingTimer(){
+  int prt = purgeRingsTimer;
+  ringMapTimer = map(prt, 0, 205000, 0, imgWidth);
+  textSize(18);
+  fill(255);
+  text("Purge Ring Timer: " + prt, 350, 38);
+}
+
 void loadConfig(){
   config = loadStrings(configFileName);
   
@@ -443,6 +511,12 @@ void loadConfig(){
       case "verticalChange": 
         verticalChange = int(pieces[1]);
         break;
+      case "remainingRings": 
+        remainingRings = int(pieces[1]);
+        break;
+      case "purgeRingsTimer": 
+        purgeRingsTimer = int(pieces[1]);
+        break;
     }
   }
 }
@@ -453,7 +527,9 @@ void saveConfig(){
           words += "blendModeIndex " + blendModeIndex + "\n";
           words += "pulseMode " + pulseMode + "\n";
           words += "amplitude " + amplitude + "\n";
-          words += "verticalChange " + verticalChange;
+          words += "verticalChange " + verticalChange + "\n";
+          words += "remainingRings " + remainingRings + "\n";
+          words += "purgeRingsTimer " + purgeRingsTimer;
   String[] list = split(words, '\n');
   
   // Writes the behaviour variables to the config file 

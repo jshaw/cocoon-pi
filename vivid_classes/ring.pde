@@ -58,7 +58,6 @@
   
   int alphaFillVal = 255;
   int initDefaultFill = 50;
-  //float initPulseIncrement = 9.0;
 
   Ring(int xpos, int ypos, int idin, int s, int b) {
     x = (float)xpos;
@@ -322,14 +321,16 @@
     showRingStroke = showStroke;
   }
   
+  // After a time of inactivity. No new beats
   void fadeAway(){
-    println("FADE AWAY!");
+    // fade away the actual ring via alpha
     if(alphaFillVal >= 0){
+      println("FADE AWAY!");
       alphaFillVal -= 1;
-      
       println(alphaFillVal);
     }
     
+    // fade away the gradient alpha rings around the original ring
     if(initDefaultFill >= 0){
      initDefaultFill -= 1;
     }
