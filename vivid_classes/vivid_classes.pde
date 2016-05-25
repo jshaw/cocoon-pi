@@ -315,7 +315,7 @@ void buildFbo() {
   fbo.noStroke();
   if(editRings == true){
     fbo.fill(0, 102, 204);
-    fbo.rect(0, fbo.height - 4, ringMap, 4);
+    fbo.rect(90, fbo.height - 4, ringMap, 4);
   } else if (editRingTimer == true) {
     fbo.fill(127, 102, 204);
     fbo.rect(0, fbo.height - 4, ringMapTimer, 4);

@@ -12,8 +12,12 @@ The reason for this workflow is that the sketchs default settings are always ava
 ### Inactivity Time
 The inactivity time before we start to purge old rings is by default 5000ms (5 seconds). This is done for testing purposes. This can be customized by pressing the `t` key then up/down arrow keys. Press `t` again to exit this time configuration. The min inactivity time is 5 seconds. Each increment goes up by 50000ms or 5 minutes. The max inactivity time is 20 minutes.
 
+The timer bar graph is a bluish colour.
+
 ### Remaining Rings after a purge
 The inactivity time dtermines when a purge of the old rings should happen. The remaining rings setting determins how many rings should be left after the purge. Note, that the rings that are left are the most recent ones added. The minimum number of rings left is 1 ring and the maximum number of rings is 15 left over.
+
+The remaining rings bar graph is a greenish colour.
 
 ### Control
 Control for the sketch is done with the below keys:
