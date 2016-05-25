@@ -120,7 +120,7 @@ void setup() {
   //---------------------------------------------------------------------
 
   // Timer so we don't clobber the i2c port
-  int timer = millis();
+  timer = millis();
 
   // Change color mode to be 
   fbo = createGraphics(imgWidth, imgHeight);
