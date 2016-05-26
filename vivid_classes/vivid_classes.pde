@@ -449,17 +449,15 @@ void drawEnds(float halfHeight, float angle, int sides, float r, float h) {
    i2c.write(address);
 
    try
-   {
-     byte[] in = i2c.read(4);
-
-     int beat = in[0];
-     if (beat<0) {
-       beat = beat +256;
-     }
-     newbeat = beat;
-     print("Address: " + address + " beat: ");
-     println(beat);
-   }
+    {
+      byte[] in = i2c.read(4);
+      String beatString = new String(in);
+      int beat = int(trim(beatString));
+      
+      newbeat = beat;
+      print("Address: " + address + " beat: ");
+      println(beat);
+    }
    catch(Exception e)
    {
      i2c.endTransmission();
