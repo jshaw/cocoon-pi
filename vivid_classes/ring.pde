@@ -9,7 +9,7 @@
   float diameter;      // Diameter of the ring
   float animationPulse; // the dynamic and updated diameter or the pulsing circle
   
-  boolean on = false;  // Turns the display on and off
+  boolean on = true;  // Turns the display on and off
   boolean visible = false;
   boolean growing = true;
   long lastBeat;
@@ -55,6 +55,9 @@
   
   // To pulse or not to pulse
   boolean pulseMode = true;
+  
+  int alphaFillVal = 255;
+  int initDefaultFill = 50;
 
   Ring(int xpos, int ypos, int idin, int s, int b) {
     x = (float)xpos;
@@ -144,7 +147,7 @@
 
     // Key 4
     if(state == 52 ){
-      on = true;
+      //on = true;
       visible = true;
       decreaseDiameter();
       
@@ -179,7 +182,7 @@
   void display() {
     if (on == true) {
       // Sets the default circle fill color 
-      setRingFill(255);
+      setRingFill(alphaFillVal);
       fbo.noStroke();
 
       // Visible && Key 4 (Blinks) || Key 6
@@ -189,7 +192,7 @@
         drawFlair(animationPulse);       
         
         // Sets ring default fill color after drawing the flair 
-        setRingFill(255);
+        setRingFill(alphaFillVal);
         
         // working on wrapping circle around
         drawWrappedShapes(animationPulse);        
@@ -201,7 +204,7 @@
         drawEllipseGradient(x, y, animationPulse);
       }
       
-      setRingFill(255);
+      setRingFill(alphaFillVal);
       fbo.ellipse(x, y, animationPulse, animationPulse * 2);
 
     }
@@ -271,7 +274,7 @@
       drawEllipseGradient((x-10), y, animationPulse);
     }
     
-    setRingFill(255);
+    setRingFill(alphaFillVal);
     fbo.ellipse(x-10, y, animationPulse, animationPulse * 2);
     
     fbo.noStroke();
@@ -280,14 +283,14 @@
       drawEllipseGradient((x+10), y, animationPulse);
     }
     
-    setRingFill(255);
+    setRingFill(alphaFillVal);
     fbo.ellipse(x+10, y, animationPulse, animationPulse * 2);
     
     fbo.noStroke();
   }
 
   void drawEllipseGradient(float x, float y, float animationPulse){
-    int initFill = 50;
+    int initFill = initDefaultFill;
     float initPulseIncrement = 9.0;
     
     for (int i = 0; i <= 2; i++){
@@ -316,6 +319,28 @@
   
   void toggleRingStroke(boolean showStroke){
     showRingStroke = showStroke;
+  }
+  
+  public boolean returnOnValue(){
+    return on;
+  }
+  
+  // After a time of inactivity. No new beats
+  void fadeAway(){
+    // fade away the actual ring via alpha
+    if(alphaFillVal > 0){
+      alphaFillVal -= 1;
+    } 
+    
+    // when alpha is at 0, mark as ready to be removed from array list
+    if(alphaFillVal == 0){
+      on = false;
+    }
+    
+    // fade away the gradient alpha rings around the original ring
+    if(initDefaultFill > 0){
+     initDefaultFill -= 1;
+    }
   }
     
   void updateVerticalChangeAmplitude(int a, int vc){

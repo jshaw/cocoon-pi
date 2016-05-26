@@ -1,0 +1,8 @@
+showRingGradient true
+showRingStroke true
+blendModeIndex 1
+pulseMode true
+amplitude 5
+verticalChange 10
+remainingRings 4
+purgeRingsTimer 5000
