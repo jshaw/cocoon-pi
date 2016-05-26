@@ -1,8 +1,8 @@
-showRingGradient false
+showRingGradient true
 showRingStroke true
 blendModeIndex 1
 pulseMode true
-amplitude 14
+amplitude 5
 verticalChange 10
-remainingRings 15
+remainingRings 4
 purgeRingsTimer 5000
