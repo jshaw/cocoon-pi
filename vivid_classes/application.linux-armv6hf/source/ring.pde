@@ -1,5 +1,6 @@
   class Ring {
   
+  int fps = 30;
   float x, y; // X-coordinate, y-coordinate
   int id, beat; 
   
@@ -8,7 +9,7 @@
   float diameter;      // Diameter of the ring
   float animationPulse; // the dynamic and updated diameter or the pulsing circle
   
-  boolean on = false;  // Turns the display on and off
+  boolean on = true;  // Turns the display on and off
   boolean visible = false;
   boolean growing = true;
   long lastBeat;
@@ -18,6 +19,13 @@
   int beatMax = 1100;
   int imgWidth = 10;
   int imgHeight = 160;
+  
+  // Used in the ring class
+  // amplitude is scaling the height of the pulsing (left/right)
+  // verticalChange is moving the sine animation up the y axis so all the numbers are positive (up/down)
+  // this can be changed via up/down or left/right keys
+  int amplitude = 5;
+  int verticalChange = 10;
   
   //Size of flair
   float flair = 0.0;
@@ -44,6 +52,12 @@
   boolean showRingGradient = true;
   
   boolean showRingStroke = true;
+  
+  // To pulse or not to pulse
+  boolean pulseMode = true;
+  
+  int alphaFillVal = 255;
+  int initDefaultFill = 50;
 
   Ring(int xpos, int ypos, int idin, int s, int b) {
     x = (float)xpos;
@@ -133,10 +147,19 @@
 
     // Key 4
     if(state == 52 ){
-      on = true;
+      //on = true;
       visible = true;
       decreaseDiameter();
-      animationPulse = 10 + (sin(PI*angle/10)+sin(angle*2/10)) * 4;
+      
+      // Toggles PulseMode. Controlled by 'p' on the keyboard
+      if(pulseMode == true){
+        //animationPulse = 10 + (sin(radians(angle/2)) + sin(radians(angle)))*-5;
+        animationPulse = verticalChange + (sin(radians(angle/2)) + sin(radians(angle)))*(amplitude*-1);
+      } else{
+        //animationPulse = 10 + sin(radians(angle))*5;
+        animationPulse = verticalChange + sin(radians(angle))*amplitude;
+      }
+      
     }
     
     // Key 5
@@ -159,7 +182,7 @@
   void display() {
     if (on == true) {
       // Sets the default circle fill color 
-      setRingFill(255);
+      setRingFill(alphaFillVal);
       fbo.noStroke();
 
       // Visible && Key 4 (Blinks) || Key 6
@@ -169,7 +192,7 @@
         drawFlair(animationPulse);       
         
         // Sets ring default fill color after drawing the flair 
-        setRingFill(255);
+        setRingFill(alphaFillVal);
         
         // working on wrapping circle around
         drawWrappedShapes(animationPulse);        
@@ -181,17 +204,32 @@
         drawEllipseGradient(x, y, animationPulse);
       }
       
-      setRingFill(255);
+      setRingFill(alphaFillVal);
       fbo.ellipse(x, y, animationPulse, animationPulse * 2);
 
     }
     
     // Pulse the ring based on the provided beat
-    // Default angle for consistent toration is 0.1
-    angle += float(beat) / float(1000);
+    // Calculates the number of degrees that needs to made per frame
+    // What we are doing here is calculating how much time we have to to turn a full 360degrees 
+    // within one second in the app 
+    // degrees in a circle / (frames per second ( beat millisecond / second in milliseconds ))
+    // 360 / (30 * (beat/1000))
+    // 360 / #of seconds to rotate
+    // = #degrees to make per frame
+    // ==================================
+    angle += degrees(TWO_PI) / ((float)fps * (float(beat) / float(1000)));    
+    
+    // ========== angle debugging for pulsing ring ============
+    //print("new angle: ");
+    //print(degrees(TWO_PI) / ((float)fps * (float(beat) / float(1000))));
+    
+    //print("angle: ");
+    //println(angle);
     
     //print("beat: ");
     //println(beat);
+    // ========== END debugging ============
   }
   
   // Updates the state of the visuals (what version to display)
@@ -230,32 +268,30 @@
   void drawWrappedShapes(float animationPulse){
     float radius = animationPulse / 2;
         
-    if (x - radius >= 0.0){
-      if(showRingGradient == true){
-        drawEllipseGradient((x-10), y, animationPulse);
-      }
-      
-      setRingFill(255);
-      fbo.ellipse(x-10, y, animationPulse, animationPulse * 2);
-      
-      fbo.noStroke();
+    // Removed conditional to draw wrapped rings all of the time
+    // They always wrap at somepoint due to pulsing + gradient
+    if(showRingGradient == true){
+      drawEllipseGradient((x-10), y, animationPulse);
     }
     
-    if (x - radius <= 0.0){
-      if(showRingGradient == true){
-        drawEllipseGradient((x+10), y, animationPulse);
-      }
-      
-      setRingFill(255);
-      fbo.ellipse(x+10, y, animationPulse, animationPulse * 2);
-      
-      fbo.noStroke();
+    setRingFill(alphaFillVal);
+    fbo.ellipse(x-10, y, animationPulse, animationPulse * 2);
+    
+    fbo.noStroke();
+    
+    if(showRingGradient == true){
+      drawEllipseGradient((x+10), y, animationPulse);
     }
+    
+    setRingFill(alphaFillVal);
+    fbo.ellipse(x+10, y, animationPulse, animationPulse * 2);
+    
+    fbo.noStroke();
   }
 
   void drawEllipseGradient(float x, float y, float animationPulse){
-    int initFill = 50;
-    float initPulseIncrement = 12.0;
+    int initFill = initDefaultFill;
+    float initPulseIncrement = 9.0;
     
     for (int i = 0; i <= 2; i++){
      float aP = animationPulse + initPulseIncrement;
@@ -263,7 +299,7 @@
      fbo.ellipse(x, y, aP, aP * 2);
       
      initFill+=initFill;
-     initPulseIncrement -= 4.0;
+     initPulseIncrement -= 3.0;
     }
   }
 
@@ -277,10 +313,49 @@
     showRingGradient = showGradient;
   }
   
+  void updatePulseMode(boolean pm){
+    pulseMode = pm;
+  }
+  
   void toggleRingStroke(boolean showStroke){
     showRingStroke = showStroke;
   }
   
+  public boolean returnOnValue(){
+    return on;
+  }
+  
+  // After a time of inactivity. No new beats
+  void fadeAway(){
+    // fade away the actual ring via alpha
+    if(alphaFillVal > 0){
+      alphaFillVal -= 1;
+    } 
+    
+    // when alpha is at 0, mark as ready to be removed from array list
+    if(alphaFillVal == 0){
+      on = false;
+    }
+    
+    // fade away the gradient alpha rings around the original ring
+    if(initDefaultFill > 0){
+     initDefaultFill -= 1;
+    }
+  }
+    
+  void updateVerticalChangeAmplitude(int a, int vc){
+    // Controls the distance or spread between the highest and lowest parts of the curve
+    if(a > 1){
+      amplitude = a;
+    }
+    
+    // Move the sin way up the y axis.
+    // this controls if the smallest number will ever be below 0. 
+    if(vc > 1){
+      verticalChange = vc;
+    }    
+  }
+    
   void updateSpeed(){
     x += xSpeed;
     y += ySpeed;
