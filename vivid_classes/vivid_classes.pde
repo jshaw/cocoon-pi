@@ -101,7 +101,7 @@ int remainingRings = 4;
 
 // Max number of rings that can be in the sketch
 // If any more rings are added start to remove the old rings
-int maxNumberOfRings = 40;
+int maxNumberOfRings = 30;
 
 boolean editRings = false;
 boolean editRingTimer = false;
@@ -290,7 +290,7 @@ void buildFbo() {
   fbo.colorMode(RGB);
 
   // background RED for testing only...
-  fbo.background(100, 0, 0, 255);
+  fbo.background(0, 0, 0, 255);
   fbo.colorMode(HSB);
   fbo.blendMode(blendModeIndex);
 

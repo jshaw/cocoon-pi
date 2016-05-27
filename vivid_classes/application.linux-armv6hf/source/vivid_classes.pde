@@ -101,7 +101,7 @@ int remainingRings = 4;
 
 // Max number of rings that can be in the sketch
 // If any more rings are added start to remove the old rings
-int maxNumberOfRings = 40;
+int maxNumberOfRings = 30;
 
 boolean editRings = false;
 boolean editRingTimer = false;
@@ -290,7 +290,7 @@ void buildFbo() {
   fbo.colorMode(RGB);
 
   // background RED for testing only...
-  fbo.background(100, 0, 0, 255);
+  fbo.background(0, 0, 0, 255);
   fbo.colorMode(HSB);
   fbo.blendMode(blendModeIndex);
 
@@ -449,17 +449,15 @@ void drawEnds(float halfHeight, float angle, int sides, float r, float h) {
    i2c.write(address);
 
    try
-   {
-     byte[] in = i2c.read(4);
-
-     int beat = in[0];
-     if (beat<0) {
-       beat = beat +256;
-     }
-     newbeat = beat;
-     print("Address: " + address + " beat: ");
-     println(beat);
-   }
+    {
+      byte[] in = i2c.read(4);
+      String beatString = new String(in);
+      int beat = int(trim(beatString));
+      
+      newbeat = beat;
+      print("Address: " + address + " beat: ");
+      println(beat);
+    }
    catch(Exception e)
    {
      i2c.endTransmission();
