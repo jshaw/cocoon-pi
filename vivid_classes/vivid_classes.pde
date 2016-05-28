@@ -22,6 +22,7 @@
 // * d: will toggle the visibility of the 3d simulation
 // * f: toggles FPS log
 // * p: toggles Pulse Mode on default visual key =# 4 key code = 52
+// * b: toggles the large ring blinking and just pulsing visual
 // * left/right: changes amplitude of sine wave / ring
 // * down/up: changes vertical change on y axis of sine wave / ring
 // * left mouse: click and hold the left mouse button will rotate the 3d simulation
