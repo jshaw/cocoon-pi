@@ -6,3 +6,4 @@ amplitude 14
 verticalChange 10
 remainingRings 15
 purgeRingsTimer 5000
+blinkVisual true

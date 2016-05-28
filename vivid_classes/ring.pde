@@ -7,6 +7,7 @@
   // Beat movement if initiated
   float xSpeed, ySpeed;
   float diameter;      // Diameter of the ring
+  float diameterLarge = 200.0;      // Diameter of the ring
   float animationPulse; // the dynamic and updated diameter or the pulsing circle
   
   boolean on = true;  // Turns the display on and off
@@ -55,6 +56,8 @@
   
   // To pulse or not to pulse
   boolean pulseMode = true;
+  boolean shrinking = true;
+  boolean blinkVisual = true;
   
   int alphaFillVal = 255;
   int initDefaultFill = 50;
@@ -79,6 +82,7 @@
     if (size == 0) {
       size = 1;
     }
+    
     diameter = 100/size;
     angle = 0.0;
     on = true;
@@ -148,16 +152,38 @@
     // Key 4
     if(state == 52 ){
       //on = true;
-      visible = true;
-      decreaseDiameter();
       
-      // Toggles PulseMode. Controlled by 'p' on the keyboard
-      if(pulseMode == true){
-        //animationPulse = 10 + (sin(radians(angle/2)) + sin(radians(angle)))*-5;
-        animationPulse = verticalChange + (sin(radians(angle/2)) + sin(radians(angle)))*(amplitude*-1);
-      } else{
-        //animationPulse = 10 + sin(radians(angle))*5;
-        animationPulse = verticalChange + sin(radians(angle))*amplitude;
+      println("diameterLarge: " + diameterLarge);
+      
+      if(shrinking == true && diameterLarge > 0.0 && blinkVisual == true){
+        diameterLarge -= 0.5;
+        
+        if ((millis() - lastBeat) > beat) {     // flash to the beat!
+          visible = !visible;                   // we can add interpolation later.
+          lastBeat = millis();
+        }
+      
+      } else {
+        shrinking = false;
+        visible = true;
+      }
+      
+      if(visible){
+        //visible = true;
+        decreaseDiameter();
+        
+        if(shrinking == true && blinkVisual == true){
+          animationPulse = diameterLarge;
+        } else {
+          // Toggles PulseMode. Controlled by 'p' on the keyboard
+          if(pulseMode == true){
+            //animationPulse = 10 + (sin(radians(angle/2)) + sin(radians(angle)))*-5;
+            animationPulse = verticalChange + (sin(radians(angle/2)) + sin(radians(angle)))*(amplitude*-1);
+          } else{
+            //animationPulse = 10 + sin(radians(angle))*5;
+            animationPulse = verticalChange + sin(radians(angle))*amplitude;
+          }
+        }
       }
       
     }
@@ -195,30 +221,31 @@
         setRingFill(alphaFillVal);
         
         // working on wrapping circle around
-        drawWrappedShapes(animationPulse);        
+        drawWrappedShapes(animationPulse);
+        
+        // Draws the main ring / circle that represents the beat
+        // =================
+        if(showRingGradient == true){       
+          drawEllipseGradient(x, y, animationPulse);
+        }
+        
+        setRingFill(alphaFillVal);
+        fbo.ellipse(x, y, animationPulse, animationPulse * 2);
+        
+        // Pulse the ring based on the provided beat
+        // Calculates the number of degrees that needs to made per frame
+        // What we are doing here is calculating how much time we have to to turn a full 360degrees 
+        // within one second in the app 
+        // degrees in a circle / (frames per second ( beat millisecond / second in milliseconds ))
+        // 360 / (30 * (beat/1000))
+        // 360 / #of seconds to rotate
+        // = #degrees to make per frame
+        // ==================================
+        angle += degrees(TWO_PI) / ((float)fps * (float(beat) / float(1000)));
+        
       }
-      
-      // Draws the main ring / circle that represents the beat
-      // =================
-      if(showRingGradient == true){       
-        drawEllipseGradient(x, y, animationPulse);
-      }
-      
-      setRingFill(alphaFillVal);
-      fbo.ellipse(x, y, animationPulse, animationPulse * 2);
 
     }
-    
-    // Pulse the ring based on the provided beat
-    // Calculates the number of degrees that needs to made per frame
-    // What we are doing here is calculating how much time we have to to turn a full 360degrees 
-    // within one second in the app 
-    // degrees in a circle / (frames per second ( beat millisecond / second in milliseconds ))
-    // 360 / (30 * (beat/1000))
-    // 360 / #of seconds to rotate
-    // = #degrees to make per frame
-    // ==================================
-    angle += degrees(TWO_PI) / ((float)fps * (float(beat) / float(1000)));    
     
     // ========== angle debugging for pulsing ring ============
     //print("new angle: ");
@@ -369,6 +396,10 @@
     if( (y < radius) || (y > imgHeight - radius)) {
      ySpeed = -ySpeed; 
     }
+  }
+  
+  void toggleBlinkVisual(boolean bv){
+    blinkVisual = bv;
   }
 }
 
