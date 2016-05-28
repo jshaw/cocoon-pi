@@ -33,8 +33,8 @@
 
 import eDMX.*;
 //--------------------------------comment out for non-Pi use-----------
-//import processing.io.*;    // enable this on the pi.
-//I2C i2c;
+import processing.io.*;    // enable this on the pi.
+I2C i2c;
 //---------------------------------------------------------------------
 
 int val = 0;
@@ -119,7 +119,7 @@ void setup() {
   colorMode(RGB);
   
   //--------------------------------comment out for non-Pi use-----------
-  //i2c = new I2C(I2C.list()[0]);
+  i2c = new I2C(I2C.list()[0]);
   //---------------------------------------------------------------------
 
   // Timer so we don't clobber the i2c port
@@ -157,22 +157,22 @@ void draw() {
   colorMode(RGB);
 
   //--------------------------------comment out for non-Pi use-----------
-  // check console 4
+  //check console 4
 
-  //if ((millis() - timer) > 2000) {
-  //beat4 = getBeat(4);
-  //if (beat4>0) {
-  //  addRing(beat4);
-  //}
+  if ((millis() - timer) > 2000) {
+  beat4 = getBeat(4);
+  if (beat4>0) {
+   addRing(beat4);
+  }
 
-  //// check console 5
-  //beat5 = getBeat(5);
+  // check console 5
+  beat5 = getBeat(5);
 
-  //if (beat5>0) {
-  //  addRing(beat5);
-  //}
-  //timer = millis();
-  //}
+  if (beat5>0) {
+   addRing(beat5);
+  }
+  timer = millis();
+  }
   //---------------------------------------------------------------------
   
   if ((millis() - lastAddTimer) > purgeRingsTimer && fadeOldRings == false) {
@@ -446,32 +446,32 @@ void drawEnds(float halfHeight, float angle, int sides, float r, float h) {
 
 
 //--------------------------------comment out for non-Pi use-----------
- //int getBeat(int address) {
- //int newbeat = 0;
- //if (I2C.list() != null)
- //{
+ int getBeat(int address) {
+ int newbeat = 0;
+ if (I2C.list() != null)
+ {
 
- //  i2c.beginTransmission(address);
- //  i2c.write(address);
+  i2c.beginTransmission(address);
+  i2c.write(address);
 
- //  try
- //   {
- //     byte[] in = i2c.read(4);
- //     String beatString = new String(in);
- //     int beat = int(trim(beatString));
+  try
+   {
+     byte[] in = i2c.read(4);
+     String beatString = new String(in);
+     int beat = int(trim(beatString));
       
- //     newbeat = beat;
- //     print("Address: " + address + " beat: ");
- //     println(beat);
- //   }
- //  catch(Exception e)
- //  {
- //    i2c.endTransmission();
- //  }
+     newbeat = beat;
+     print("Address: " + address + " beat: ");
+     println(beat);
+   }
+  catch(Exception e)
+  {
+    i2c.endTransmission();
+  }
    
- //}
- //return(newbeat);
-//}
+ }
+ return(newbeat);
+}
 //----------------------------------------------------------------------
 
 
